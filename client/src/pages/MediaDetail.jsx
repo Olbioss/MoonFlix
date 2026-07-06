@@ -4,7 +4,6 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
 import { Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -17,9 +16,8 @@ import tmdbConfigs from "../api/configs/tmdb.configs";
 import mediaApi from "../api/modules/media.api";
 import favoriteApi from "../api/modules/favorite.api";
 
-import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
-import { setAuthModalOpen } from "../redux/features/authModalSlice";
-import { addFavorite, removeFavorite } from "../redux/features/userSlice";
+import useAuthStore from "../store/authStore";
+import useUiStore from "../store/uiStore";
 import CastSlide from "../components/common/CastSlide";
 import MediaVideoSlide from "../components/common/MediaVideoSlide";
 import BackdropSlide from "../components/common/BackdropSlide";
@@ -30,24 +28,28 @@ import MediaReview from "../components/common/MediaReview";
 
 const MediaDetail = () => {
   const { mediaType, mediaId } = useParams();
-  const { user, listFavorites } = useSelector((state) => state.user);
+  const user = useAuthStore((s) => s.user);
+  const listFavorites = useAuthStore((s) => s.listFavorites);
   const [media, setMedia] = useState();
   const [isFavorite, setIsFavorite] = useState(false);
   const [onRequest, setOnRequest] = useState(false);
   const [genres, setGenres] = useState([]);
 
-  const dispatch = useDispatch();
+  const addFavorite = useAuthStore((s) => s.addFavorite);
+  const removeFavorite = useAuthStore((s) => s.removeFavorite);
+  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
+  const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
   const videoRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     const getMedia = async () => {
-      dispatch(setGlobalLoading(true));
+      setGlobalLoading(true);
       const { response, err } = await mediaApi.getDetail({
         mediaType,
         mediaId,
       });
-      dispatch(setGlobalLoading(false));
+      setGlobalLoading(false);
 
       if (response) {
         setMedia(response);
@@ -59,10 +61,10 @@ const MediaDetail = () => {
     };
 
     getMedia();
-  }, [mediaType, mediaId, dispatch]);
+  }, [mediaType, mediaId, setGlobalLoading]);
 
   const onFavoriteClick = async () => {
-    if (!user) return dispatch(setAuthModalOpen(true));
+    if (!user) return setAuthModalOpen(true);
 
     if (onRequest) return;
 
@@ -87,7 +89,7 @@ const MediaDetail = () => {
 
     if (err) toast.error(err.message);
     if (response) {
-      dispatch(addFavorite(response));
+      addFavorite(response);
       setIsFavorite(true);
       toast.success("Add favorite success");
     }
@@ -109,7 +111,7 @@ const MediaDetail = () => {
 
     if (err) toast.error(err.message);
     if (response) {
-      dispatch(removeFavorite(favorite));
+      removeFavorite(favorite);
       setIsFavorite(false);
       toast.success("Remove favorite success");
     }

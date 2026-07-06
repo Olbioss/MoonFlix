@@ -1,10 +1,10 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
-import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import PageWrapper from "./components/common/PageWrapper";
 import themeConfigs from "./configs/theme.configs";
+import useThemeStore from "./store/themeStore";
 import routes from "./routes/routes";
 
 import "react-toastify/ReactToastify.css";
@@ -14,7 +14,7 @@ import "swiper/css/pagination";
 import MainLayout from "./components/MainLayout.jsx";
 
 const App = () => {
-  const { themeMode } = useSelector((state) => state.themeMode);
+  const themeMode = useThemeStore((s) => s.themeMode);
 
   return (
     <ThemeProvider theme={themeConfigs.custom({ mode: themeMode })}>

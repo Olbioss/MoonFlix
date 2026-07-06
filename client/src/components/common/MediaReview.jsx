@@ -11,13 +11,13 @@ import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
-import { useSelector } from "react-redux";
+import useAuthStore from "../../store/authStore";
 import Container from "./Container";
 import reviewApi from "../../api/modules/review.api";
 import TextAvatar from "./TextAvatar";
 
 const ReviewItem = ({ review, onRemoved }) => {
-  const { user } = useSelector((state) => state.user);
+  const user = useAuthStore((s) => s.user);
 
   const [onRequest, setOnRequest] = useState(false);
 
@@ -81,7 +81,7 @@ const ReviewItem = ({ review, onRemoved }) => {
 };
 
 const MediaReview = ({ reviews, media, mediaType }) => {
-  const { user } = useSelector((state) => state.user);
+  const user = useAuthStore((s) => s.user);
   const [listReviews, setListReviews] = useState([]);
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [page, setPage] = useState(1);

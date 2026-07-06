@@ -9,13 +9,12 @@ import {
   useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { toast } from "react-toastify";
 
-import { setGlobalLoading } from "../../redux/features/globalLoadingSlice";
+import useUiStore from "../../store/uiStore";
 import { routesGen } from "../../routes/routes";
 
 import uiConfigs from "../../configs/ui.configs";
@@ -28,7 +27,7 @@ import mediaApi from "../../api/modules/media.api";
 
 const HeroSlide = ({ mediaType, mediaCategory }) => {
   const theme = useTheme();
-  const dispatch = useDispatch();
+  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
 
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -43,11 +42,11 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
 
       if (response) setMovies(response.results);
       if (err) toast.error(err.message);
-      dispatch(setGlobalLoading(false));
+      setGlobalLoading(false);
     };
 
     const getGenres = async () => {
-      dispatch(setGlobalLoading(true));
+      setGlobalLoading(true);
       const { response, err } = await genreApi.getList({ mediaType });
 
       if (response) {
@@ -61,7 +60,7 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
     };
 
     getGenres();
-  }, [mediaType, mediaCategory, dispatch]);
+  }, [mediaType, mediaCategory, setGlobalLoading]);
 
   return (
     <Box

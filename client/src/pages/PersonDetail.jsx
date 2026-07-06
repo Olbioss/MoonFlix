@@ -7,26 +7,25 @@ import uiConfigs from "../configs/ui.configs";
 import Container from "../components/common/Container";
 import personApi from "../api/modules/person.api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
+import useUiStore from "../store/uiStore";
 
 const PersonDetail = () => {
   const { personId } = useParams();
   const [person, setPerson] = useState();
-  const dispatch = useDispatch();
+  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
 
   useEffect(() => {
     const getPerson = async () => {
-      dispatch(setGlobalLoading(true));
+      setGlobalLoading(true);
       const { response, err } = await personApi.detail({ personId });
-      dispatch(setGlobalLoading(false));
+      setGlobalLoading(false);
 
       if (err) toast.error(err.message);
       if (response) setPerson(response);
     };
 
     getPerson();
-  }, [personId, dispatch]);
+  }, [personId, setGlobalLoading]);
 
   return (
     <>

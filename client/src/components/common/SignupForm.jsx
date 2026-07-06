@@ -1,15 +1,15 @@
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import userApi from "../../api/modules/user.api";
-import { setAuthModalOpen } from "../../redux/features/authModalSlice";
-import { setUser } from "../../redux/features/userSlice";
+import useAuthStore from "../../store/authStore";
+import useUiStore from "../../store/uiStore";
 
 const SignupForm = ({ switchAuthState }) => {
-  const dispatch = useDispatch();
+  const setUser = useAuthStore((s) => s.setUser);
+  const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
 
   const [isLoginRequest, setIsLoginRequest] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
@@ -44,8 +44,8 @@ const SignupForm = ({ switchAuthState }) => {
 
       if (response) {
         signinForm.resetForm();
-        dispatch(setUser(response));
-        dispatch(setAuthModalOpen(false));
+        setUser(response);
+        setAuthModalOpen(false);
         toast.success("Sign in success");
       }
 

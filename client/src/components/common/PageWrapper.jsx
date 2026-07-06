@@ -1,14 +1,13 @@
-import { useDispatch } from "react-redux";
-import { setAppState } from "../../redux/features/appStateSlice.js";
 import { useEffect } from "react";
+import useUiStore from "../../store/uiStore";
 
 const PageWrapper = ({ state, children }) => {
-  const dispatch = useDispatch();
+  const setAppState = useUiStore((s) => s.setAppState);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    dispatch(setAppState(state));
-  }, [state, dispatch]);
+    setAppState(state);
+  }, [state, setAppState]);
 
   return children;
 };

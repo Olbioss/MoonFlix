@@ -1,17 +1,16 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import MediaItem from "../components/common/MediaItem";
 import Container from "../components/common/Container";
 import uiConfigs from "../configs/ui.configs";
 import favoriteApi from "../api/modules/favorite.api";
-import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
-import { removeFavorite } from "../redux/features/userSlice";
+import useAuthStore from "../store/authStore";
+import useUiStore from "../store/uiStore";
 
 const FavoriteItem = ({ media, onRemoved }) => {
-  const dispatch = useDispatch();
+  const removeFavorite = useAuthStore((s) => s.removeFavorite);
   const [onRequest, setOnRequest] = useState(false);
 
   const onRemove = async () => {
@@ -24,7 +23,7 @@ const FavoriteItem = ({ media, onRemoved }) => {
 
     if (err) toast.error(err.message);
     if (response) {
-      dispatch(removeFavorite({ mediaId: media.mediaId }));
+      removeFavorite({ mediaId: media.mediaId });
       onRemoved(media.id);
     }
   };
@@ -52,14 +51,14 @@ const FavoriteList = () => {
   const [filteredMedias, setFilteredMedias] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
-  const dispatch = useDispatch();
+  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
   const skip = 8;
 
   useEffect(() => {
     const getFavorites = async () => {
-      dispatch(setGlobalLoading(true));
+      setGlobalLoading(true);
       const { response, err } = await favoriteApi.getList();
-      dispatch(setGlobalLoading(false));
+      setGlobalLoading(false);
 
       if (err) toast.error(err.message);
       if (response) {
@@ -70,7 +69,7 @@ const FavoriteList = () => {
     };
 
     getFavorites();
-  }, [dispatch]);
+  }, [setGlobalLoading]);
 
   const onLoadMore = () => {
     setFilteredMedias([

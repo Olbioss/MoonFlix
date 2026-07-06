@@ -1,14 +1,12 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useEffect, useState, useMemo } from "react";
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import tmdbConfigs from "../api/configs/tmdb.configs";
 import mediaApi from "../api/modules/media.api";
 import uiConfigs from "../configs/ui.configs";
 import HeroSlide from "../components/common/HeroSlide";
 import MediaGrid from "../components/common/MediaGrid";
-import { setAppState } from "../redux/features/appStateSlice";
-import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
+import useUiStore from "../store/uiStore";
 import usePrevious from "../hooks/usePrevious";
 import { toast } from "react-toastify";
 
@@ -21,19 +19,20 @@ const MediaList = () => {
   const [currPage, setCurrPage] = useState(1);
 
   const prevMediaType = usePrevious(mediaType);
-  const dispatch = useDispatch();
+  const setAppState = useUiStore((s) => s.setAppState);
+  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
 
   const mediaCategories = useMemo(() => ["popular", "top_rated"], []);
   const category = ["popular", "top rated"];
 
   useEffect(() => {
-    dispatch(setAppState(mediaType));
+    setAppState(mediaType);
     window.scrollTo(0, 0);
-  }, [mediaType, dispatch]);
+  }, [mediaType, setAppState]);
 
   useEffect(() => {
     const getMedias = async () => {
-      if (currPage === 1) dispatch(setGlobalLoading(true));
+      if (currPage === 1) setGlobalLoading(true);
       setMediaLoading(true);
 
       const { response, err } = await mediaApi.getList({
@@ -43,7 +42,7 @@ const MediaList = () => {
       });
 
       setMediaLoading(false);
-      dispatch(setGlobalLoading(false));
+      setGlobalLoading(false);
 
       if (err) toast.error(err.message);
       if (response) {
@@ -58,7 +57,7 @@ const MediaList = () => {
     currPage,
     prevMediaType,
     mediaCategories,
-    dispatch,
+    setGlobalLoading,
   ]);
 
   const onCategoryChange = (categoryIndex) => {

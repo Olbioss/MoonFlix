@@ -7,14 +7,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import menuConfigs from "../../configs/menu.configs";
-import { setUser } from "../../redux/features/userSlice";
+import useAuthStore from "../../store/authStore";
 
 const UserMenu = () => {
-  const { user } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const user = useAuthStore((s) => s.user);
+  const setUser = useAuthStore((s) => s.setUser);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -60,7 +59,7 @@ const UserMenu = () => {
             ))}
             <ListItemButton
               sx={{ borderRadius: "10px" }}
-              onClick={() => dispatch(setUser(null))}
+              onClick={() => setUser(null)}
             >
               <ListItemIcon>
                 <LogoutOutlinedIcon />

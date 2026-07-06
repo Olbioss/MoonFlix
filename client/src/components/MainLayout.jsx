@@ -4,39 +4,39 @@ import GlobalLoading from "./common/GlobalLoading";
 import Footer from "./common/Footer";
 import Topbar from "./common/Topbar";
 import AuthModal from "./common/AuthModal";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import userApi from "../api/modules/user.api";
 import favoriteApi from "../api/modules/favorite.api";
-import { setListFavorites, setUser } from "../redux/features/userSlice";
+import useAuthStore from "../store/authStore";
 
 const MainLayout = () => {
-  const { user } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const user = useAuthStore((s) => s.user);
+  const setUser = useAuthStore((s) => s.setUser);
+  const setListFavorites = useAuthStore((s) => s.setListFavorites);
 
   useEffect(() => {
     const authUser = async () => {
       const { response, err } = await userApi.getInfo();
 
-      if (response) dispatch(setUser(response));
-      if (err) dispatch(setUser(null));
+      if (response) setUser(response);
+      if (err) setUser(null);
     };
 
     authUser();
-  }, [dispatch]);
+  }, [setUser]);
 
   useEffect(() => {
     const getFavorites = async () => {
       const { response, err } = await favoriteApi.getList();
 
-      if (response) dispatch(setListFavorites(response));
+      if (response) setListFavorites(response);
       if (err) toast.error(err.message);
     };
 
     if (user) getFavorites();
-    if (!user) dispatch(setListFavorites([]));
-  }, [user, dispatch]);
+    if (!user) setListFavorites([]);
+  }, [user, setListFavorites]);
 
   return (
     <>

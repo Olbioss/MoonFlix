@@ -1,14 +1,14 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setAuthModalOpen } from "../../redux/features/authModalSlice";
+import useAuthStore from "../../store/authStore";
+import useUiStore from "../../store/uiStore";
 
 const ProtectedPage = ({ children }) => {
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const user = useAuthStore((s) => s.user);
+  const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
 
   useEffect(() => {
-    dispatch(setAuthModalOpen(!user));
-  }, [user, dispatch]);
+    setAuthModalOpen(!user);
+  }, [user, setAuthModalOpen]);
 
   return user ? children : null;
 };

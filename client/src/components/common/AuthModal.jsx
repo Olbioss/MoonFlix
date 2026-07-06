@@ -1,7 +1,6 @@
 import { Box, Modal } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setAuthModalOpen } from "../../redux/features/authModalSlice";
+import useUiStore from "../../store/uiStore";
 import Logo from "./Logo";
 import SigninForm from "./SigninForm";
 import SignupForm from "./SignupForm";
@@ -12,9 +11,8 @@ const actionState = {
 };
 
 const AuthModal = () => {
-  const { authModalOpen } = useSelector((state) => state.authModal);
-
-  const dispatch = useDispatch();
+  const authModalOpen = useUiStore((s) => s.authModalOpen);
+  const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
 
   const [action, setAction] = useState(actionState.signin);
 
@@ -22,7 +20,7 @@ const AuthModal = () => {
     if (authModalOpen) setAction(actionState.signin);
   }, [authModalOpen]);
 
-  const handleClose = () => dispatch(setAuthModalOpen(false));
+  const handleClose = () => setAuthModalOpen(false);
 
   const switchAuthState = (state) => setAction(state);
 

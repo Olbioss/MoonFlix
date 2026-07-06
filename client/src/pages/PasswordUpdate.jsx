@@ -7,15 +7,15 @@ import { useState } from "react";
 import userApi from "../api/modules/user.api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setUser } from "../redux/features/userSlice";
-import { setAuthModalOpen } from "../redux/features/authModalSlice";
+import useAuthStore from "../store/authStore";
+import useUiStore from "../store/uiStore";
 
 const PasswordUpdate = () => {
   const [onRequest, setOnRequest] = useState(false);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const setUser = useAuthStore((s) => s.setUser);
+  const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
 
   const form = useFormik({
     initialValues: {
@@ -49,8 +49,8 @@ const PasswordUpdate = () => {
     if (response) {
       form.resetForm();
       navigate("/");
-      dispatch(setUser(null));
-      dispatch(setAuthModalOpen(true));
+      setUser(null);
+      setAuthModalOpen(true);
       toast.success("Update password success! Please re-login");
     }
   };

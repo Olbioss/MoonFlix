@@ -8,7 +8,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import menuConfigs from "../../configs/menu.configs";
 import Logo from "./Logo";
@@ -17,20 +16,22 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 
 import { themeModes } from "../../configs/theme.configs";
-import { setThemeMode } from "../../redux/features/themeModeSlice";
+import useAuthStore from "../../store/authStore";
+import useThemeStore from "../../store/themeStore";
+import useUiStore from "../../store/uiStore";
 
 const Sidebar = ({ open, toggleSidebar }) => {
-  const { user } = useSelector((state) => state.user);
-  const { appState } = useSelector((state) => state.appState);
-  const { themeMode } = useSelector((state) => state.themeMode);
-  const dispatch = useDispatch();
+  const user = useAuthStore((s) => s.user);
+  const appState = useUiStore((s) => s.appState);
+  const themeMode = useThemeStore((s) => s.themeMode);
+  const setThemeMode = useThemeStore((s) => s.setThemeMode);
 
   const sidebarWidth = uiConfigs.size.sidebarWidth;
 
   const onSwitchTheme = () => {
     const theme =
       themeMode === themeModes.dark ? themeModes.light : themeModes.dark;
-    dispatch(setThemeMode(theme));
+    setThemeMode(theme);
   };
 
   const drawer = (
