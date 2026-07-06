@@ -1,0 +1,34 @@
+import { Avatar } from "@mui/material";
+
+const TextAvatar = ({ text }: { text: string }) => {
+  const stringToColor = (str: string) => {
+    let hash = 0;
+    let i;
+
+    for (i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+
+    for (let i = 0; i < 3; i++) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+
+    return color;
+  };
+  return (
+    <Avatar
+      sx={{
+        backgroundColor: stringToColor(text),
+        width: 40,
+        height: 40,
+      }}
+    >
+      {`${text.split(" ")[0][0]}`}
+    </Avatar>
+  );
+};
+
+export default TextAvatar;
