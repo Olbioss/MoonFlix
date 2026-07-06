@@ -41,9 +41,24 @@ app.use(cookieParser());
 
 app.use("/api/v1", router);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 const server = http.createServer(app);
+
+// Turn the common "port already taken" crash into an actionable message rather
+// than an unhandled 'error' event. On macOS, AirPlay Receiver holds port 5000.
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(
+      `Port ${port} is already in use. On macOS the AirPlay Receiver service ` +
+        `occupies port 5000 by default — set PORT in server/.env to a free ` +
+        `port or disable AirPlay Receiver in System Settings.`
+    );
+  } else {
+    console.error(err);
+  }
+  process.exit(1);
+});
 
 mongoose
   .connect(process.env.MONGODB_URL)

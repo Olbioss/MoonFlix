@@ -3,7 +3,7 @@ import queryString from "query-string";
 import type { ApiError, HttpClient } from "../../types";
 
 const baseURL =
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5000/api/v1/";
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5001/api/v1/";
 
 const privateClient = axios.create({
   baseURL,
