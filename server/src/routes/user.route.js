@@ -1,5 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
+import rateLimit from "express-rate-limit";
 import favoriteController from "../controllers/favorite.controller.js";
 import userController from "../controllers/user.controller.js";
 import requestHandler from "../handlers/request.handler.js";
@@ -8,8 +9,18 @@ import tokenMiddleware from "../middlewares/token.middleware.js";
 
 const router = express.Router();
 
+// Throttle credential endpoints to blunt brute-force / enumeration attempts.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many attempts, please try again later" }
+});
+
 router.post(
   "/signup",
+  authLimiter,
   body("username")
     .exists().withMessage("username is required")
     .isLength({ min: 8 }).withMessage("username minimum 8 characters")
@@ -36,6 +47,7 @@ router.post(
 
 router.post(
   "/signin",
+  authLimiter,
   body("username")
     .exists().withMessage("username is required")
     .isLength({ min: 8 }).withMessage("username minimum 8 characters"),

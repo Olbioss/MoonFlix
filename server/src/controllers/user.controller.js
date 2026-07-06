@@ -41,12 +41,18 @@ const signin = async (req, res) => {
 
     const user = await userModel
       .findOne({ username })
-      .select("username password salt id displayName");
+      .select("username password salt iterations id displayName");
 
     if (!user) return responseHandler.badrequest(res, "User not exist");
 
     if (!user.validPassword(password))
       return responseHandler.badrequest(res, "Wrong password");
+
+    // Transparently upgrade legacy (weakly-hashed) passwords on successful login.
+    if (user.needsRehash()) {
+      user.setPassword(password);
+      await user.save();
+    }
 
     const token = jsonwebtoken.sign(
       { data: user.id },
@@ -73,7 +79,7 @@ const updatePassword = async (req, res) => {
 
     const user = await userModel
       .findById(req.user.id)
-      .select("password id salt");
+      .select("password id salt iterations");
 
     if (!user) return responseHandler.unauthorize(res);
 
