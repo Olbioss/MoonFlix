@@ -120,7 +120,7 @@ const ReviewList = () => {
     };
 
     getReviews();
-  }, []);
+  }, [dispatch]);
 
   const onLoadMore = () => {
     setFilteredReviews([

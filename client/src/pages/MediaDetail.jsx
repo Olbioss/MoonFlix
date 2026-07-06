@@ -53,7 +53,7 @@ const MediaDetail = () => {
       if (response) {
         setMedia(response);
         setIsFavorite(response.isFavorite);
-        setGenres(response.genres.splice(0, 2));
+        setGenres(response.genres.slice(0, 2));
       }
 
       if (err) toast.error(err.message);
@@ -166,11 +166,15 @@ const MediaDetail = () => {
                   fontWeight="700"
                   sx={{ ...uiConfigs.style.typoLines(2, "left") }}
                 >
-                  {`${media.title || media.name} ${
-                    mediaType === tmdbConfigs.mediaType.movie
-                      ? media.release_date.split("-")[0]
-                      : media.first_air_date.split("-")[0]
-                  }`}
+                  {[
+                    media.title || media.name,
+                    (mediaType === tmdbConfigs.mediaType.movie
+                      ? media.release_date
+                      : media.first_air_date
+                    )?.split("-")[0],
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 </Typography>
                 {/* title */}
 
@@ -205,7 +209,7 @@ const MediaDetail = () => {
                     variant="text"
                     sx={{
                       width: "max-content",
-                      "& .MuiButon-starIcon": { marginRight: "0" },
+                      "& .MuiButton-startIcon": { marginRight: "0" },
                     }}
                     size="large"
                     startIcon={

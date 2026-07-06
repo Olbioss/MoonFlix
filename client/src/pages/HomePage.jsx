@@ -1,4 +1,3 @@
-import React from "react";
 import HeroSlide from "../components/common/HeroSlide";
 import tmdbConfigs from "../api/configs/tmdb.configs";
 import { Box } from "@mui/material";

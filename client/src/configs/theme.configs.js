@@ -11,11 +11,11 @@ const themeConfigs = {
     const customPallete = mode === themeModes.dark ? {
       primary: {
         main: "#ff0000",
-        constrastText: "#ffffff"
+        contrastText: "#ffffff"
       },
       secondary: {
         main: "#f44336",
-        constrastText: "#ffffff"
+        contrastText: "#ffffff"
       },
       background: {
         default: "#000000",

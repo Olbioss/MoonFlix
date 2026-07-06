@@ -25,7 +25,7 @@ const Sidebar = ({ open, toggleSidebar }) => {
   const { themeMode } = useSelector((state) => state.themeMode);
   const dispatch = useDispatch();
 
-  const sidebarWidth = uiConfigs.size.sidebarWith;
+  const sidebarWidth = uiConfigs.size.sidebarWidth;
 
   const onSwitchTheme = () => {
     const theme =

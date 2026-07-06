@@ -1,4 +1,3 @@
-import React from "react";
 import Container from "./Container";
 import { Box, Button, Paper, Stack } from "@mui/material";
 import Logo from "./Logo";

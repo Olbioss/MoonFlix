@@ -8,9 +8,11 @@ const mediaCategory = {
   top_rated: "top_rated"
 }
 
-const backdropPath = (imgEndpoint) => `https://image.tmdb.org/t/p/original${imgEndpoint}`
+const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL || "https://image.tmdb.org/t/p/"
 
-const posterPath = (imgEndpoint) => `https://image.tmdb.org/t/p/w500${imgEndpoint}`
+const backdropPath = (imgEndpoint) => `${imageBaseUrl}original${imgEndpoint}`
+
+const posterPath = (imgEndpoint) => `${imageBaseUrl}w500${imgEndpoint}`
 
 const youtubePath = (videoId) => `https://www.youtube.com/embed/${videoId}?controls=0`;
 

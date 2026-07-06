@@ -40,13 +40,9 @@ const MainLayout = () => {
 
   return (
     <>
-      {/* global loading*/}
       <GlobalLoading />
-      {/* global loading*/}
 
-      {/* login modal*/}
       <AuthModal />
-      {/* login modal*/}
 
       <Box display="flex" minHeight="100vh">
         {/* header */}

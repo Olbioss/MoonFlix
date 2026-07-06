@@ -1,4 +1,3 @@
-import React from "react";
 import AutoSwiper from "./AutoSwiper";
 import { SwiperSlide } from "swiper/react";
 import MediaItem from "./MediaItem";
