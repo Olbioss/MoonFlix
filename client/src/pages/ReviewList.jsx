@@ -1,4 +1,3 @@
-import { LoadingButton } from "@mui/lab";
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -78,7 +77,7 @@ const ReviewItem = ({ review, onRemoved }) => {
           <Typography>{review.content}</Typography>
         </Stack>
       </Box>
-      <LoadingButton
+      <Button
         variant="contained"
         sx={{
           position: { xs: "relative", md: "absolute" },
@@ -92,7 +91,7 @@ const ReviewItem = ({ review, onRemoved }) => {
         onClick={onRemove}
       >
         remove
-      </LoadingButton>
+      </Button>
     </Box>
   );
 };

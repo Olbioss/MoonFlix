@@ -1,4 +1,3 @@
-import { LoadingButton } from "@mui/lab";
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";
@@ -120,7 +119,7 @@ const SignupForm = ({ switchAuthState }) => {
         />
       </Stack>
 
-      <LoadingButton
+      <Button
         type="submit"
         fullWidth
         size="large"
@@ -129,7 +128,7 @@ const SignupForm = ({ switchAuthState }) => {
         loading={isLoginRequest}
       >
         sign up
-      </LoadingButton>
+      </Button>
 
       <Button fullWidth sx={{ marginTop: 1 }} onClick={() => switchAuthState()}>
         sign in

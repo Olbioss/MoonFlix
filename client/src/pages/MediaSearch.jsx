@@ -1,4 +1,3 @@
-import { LoadingButton } from "@mui/lab";
 import { Box, Button, Stack, TextField, Toolbar } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
@@ -92,9 +91,9 @@ const MediaSearch = () => {
           />
           <MediaGrid medias={medias} mediaType={mediaType} />
           {medias.length > 0 && (
-            <LoadingButton loading={onSearch} onClick={() => setPage(page + 1)}>
+            <Button loading={onSearch} onClick={() => setPage(page + 1)}>
               load more
-            </LoadingButton>
+            </Button>
           )}
         </Stack>
       </Box>

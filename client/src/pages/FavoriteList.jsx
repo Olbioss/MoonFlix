@@ -1,5 +1,4 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { LoadingButton } from "@mui/lab";
 import { Box, Button, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -33,7 +32,7 @@ const FavoriteItem = ({ media, onRemoved }) => {
   return (
     <>
       <MediaItem media={media} mediaType={media.mediaType} />
-      <LoadingButton
+      <Button
         fullWidth
         variant="contained"
         sx={{ marginTop: 2 }}
@@ -43,7 +42,7 @@ const FavoriteItem = ({ media, onRemoved }) => {
         onClick={onRemove}
       >
         remove
-      </LoadingButton>
+      </Button>
     </>
   );
 };

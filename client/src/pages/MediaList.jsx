@@ -1,4 +1,3 @@
-import { LoadingButton } from "@mui/lab";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useEffect, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
@@ -108,7 +107,7 @@ const MediaList = () => {
           </Stack>
         </Stack>
         <MediaGrid medias={medias} mediaType={mediaType} />
-        <LoadingButton
+        <Button
           sx={{ marginTop: 8 }}
           fullWidth
           color="primary"
@@ -116,7 +115,7 @@ const MediaList = () => {
           onClick={onLoadMore}
         >
           load more
-        </LoadingButton>
+        </Button>
       </Box>
     </>
   );

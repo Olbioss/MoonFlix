@@ -1,5 +1,4 @@
-import { LoadingButton } from "@mui/lab";
-import { Box, Stack, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Container from "../components/common/Container";
@@ -106,7 +105,7 @@ const PasswordUpdate = () => {
               }
             />
 
-            <LoadingButton
+            <Button
               type="submit"
               variant="contained"
               fullWidth
@@ -114,7 +113,7 @@ const PasswordUpdate = () => {
               loading={onRequest}
             >
               update password
-            </LoadingButton>
+            </Button>
           </Stack>
         </Box>
       </Container>

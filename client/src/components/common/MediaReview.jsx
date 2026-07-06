@@ -1,4 +1,3 @@
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -59,7 +58,7 @@ const ReviewItem = ({ review, onRemoved }) => {
             {review.content}
           </Typography>
           {user && user.id === review.user.id && (
-            <LoadingButton
+            <Button
               variant="contained"
               startIcon={<DeleteIcon />}
               loadingPosition="start"
@@ -73,7 +72,7 @@ const ReviewItem = ({ review, onRemoved }) => {
               }}
             >
               remove
-            </LoadingButton>
+            </Button>
           )}
         </Stack>
       </Stack>
@@ -183,7 +182,7 @@ const MediaReview = ({ reviews, media, mediaType }) => {
                   placeholder="Write your review"
                   variant="outlined"
                 />
-                <LoadingButton
+                <Button
                   variant="contained"
                   size="large"
                   sx={{ width: "max-content" }}
@@ -193,7 +192,7 @@ const MediaReview = ({ reviews, media, mediaType }) => {
                   onClick={onAddReview}
                 >
                   post
-                </LoadingButton>
+                </Button>
               </Stack>
             </Stack>
           </>
