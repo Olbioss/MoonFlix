@@ -6,6 +6,7 @@ import mediaApi from "../api/modules/media.api";
 import uiConfigs from "../configs/ui.configs";
 import HeroSlide from "../components/common/HeroSlide";
 import MediaGrid from "../components/common/MediaGrid";
+import MediaGridSkeleton from "../components/common/MediaGridSkeleton";
 import useUiStore from "../store/uiStore";
 import usePrevious from "../hooks/usePrevious";
 import type { Media } from "../types";
@@ -106,7 +107,11 @@ const MediaList = () => {
             ))}
           </Stack>
         </Stack>
-        <MediaGrid medias={medias} mediaType={mediaType} />
+        {mediaLoading && medias.length === 0 ? (
+          <MediaGridSkeleton />
+        ) : (
+          <MediaGrid medias={medias} mediaType={mediaType} />
+        )}
         <Button
           sx={{ marginTop: 8 }}
           fullWidth

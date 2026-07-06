@@ -1,0 +1,54 @@
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import Logo from "../components/common/Logo";
+import uiConfigs from "../configs/ui.configs";
+
+const NotFound = () => {
+  return (
+    <Box
+      sx={{
+        ...uiConfigs.style.mainContent,
+        minHeight: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+      }}
+    >
+      <Stack spacing={3} alignItems="center" maxWidth="520px">
+        <Logo />
+        <Typography
+          fontWeight={800}
+          sx={{
+            fontSize: { xs: "6rem", md: "10rem" },
+            lineHeight: 1,
+            backgroundImage: "linear-gradient(180deg, #ff2e3d, #b20710)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          404
+        </Typography>
+        <Typography variant="h5" fontWeight={700}>
+          Lost in orbit
+        </Typography>
+        <Typography color="text.secondary">
+          The page you&apos;re looking for drifted off into deep space.
+          Let&apos;s get you back to the good stuff.
+        </Typography>
+        <Button
+          variant="contained"
+          size="large"
+          component={Link}
+          to="/"
+          startIcon={<HomeOutlinedIcon />}
+        >
+          Back home
+        </Button>
+      </Stack>
+    </Box>
+  );
+};
+
+export default NotFound;

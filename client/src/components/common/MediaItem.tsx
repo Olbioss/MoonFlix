@@ -117,6 +117,7 @@ const MediaItem = ({
             <Button
               className="media-play-btn"
               variant="contained"
+              aria-label="Play"
               startIcon={<PlayArrowIcon />}
               sx={{
                 display: { xs: "none", md: "flex" },

@@ -78,6 +78,7 @@ const Topbar = () => {
             <Stack direction="row" spacing={1} alignItems="center">
               <IconButton
                 color="inherit"
+                aria-label="Open navigation menu"
                 sx={{ mr: 2, display: { md: "none" } }}
                 onClick={toggleSidebar}
               >
@@ -113,7 +114,11 @@ const Topbar = () => {
                   {item.display}
                 </Button>
               ))}
-              <IconButton sx={{ color: "inherit" }} onClick={onSwitchTheme}>
+              <IconButton
+                sx={{ color: "inherit" }}
+                aria-label="Toggle light or dark theme"
+                onClick={onSwitchTheme}
+              >
                 {themeMode === themeModes.dark && <DarkModeOutlinedIcon />}
                 {themeMode === themeModes.light && <WbSunnyOutlinedIcon />}
               </IconButton>
