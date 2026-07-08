@@ -8,13 +8,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { toast } from "react-toastify";
 
-import useUiStore from "../../store/uiStore";
 import { routesGen } from "../../routes/routes";
 
 import uiConfigs from "../../configs/ui.configs";
@@ -22,9 +19,7 @@ import uiConfigs from "../../configs/ui.configs";
 import CircularRate from "./CircularRate";
 
 import tmdbConfigs from "../../api/configs/tmdb.configs";
-import genreApi from "../../api/modules/genre.api";
-import mediaApi from "../../api/modules/media.api";
-import type { Genre, Media } from "../../types";
+import { useGenres, useMediaList } from "../../api/queries/media.queries";
 
 const HeroSlide = ({
   mediaType,
@@ -34,40 +29,9 @@ const HeroSlide = ({
   mediaCategory: string;
 }) => {
   const theme = useTheme();
-  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
 
-  const [movies, setMovies] = useState<Media[]>([]);
-  const [genres, setGenres] = useState<Genre[]>([]);
-
-  useEffect(() => {
-    const getMedias = async () => {
-      const { response, err } = await mediaApi.getList({
-        mediaType,
-        mediaCategory,
-        page: 1,
-      });
-
-      if (response) setMovies(response.results);
-      if (err) toast.error(err.message);
-      setGlobalLoading(false);
-    };
-
-    const getGenres = async () => {
-      setGlobalLoading(true);
-      const { response, err } = await genreApi.getList({ mediaType });
-
-      if (response) {
-        setGenres(response.genres);
-        getMedias();
-      }
-      if (err) {
-        toast.error(err.message);
-        setGlobalLoading(false);
-      }
-    };
-
-    getGenres();
-  }, [mediaType, mediaCategory, setGlobalLoading]);
+  const { data: genres = [] } = useGenres(mediaType);
+  const { data: movies = [] } = useMediaList(mediaType, mediaCategory);
 
   return (
     <Box

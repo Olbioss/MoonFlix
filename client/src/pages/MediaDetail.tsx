@@ -13,7 +13,6 @@ import ImageHeader from "../components/common/ImageHeader";
 
 import uiConfigs from "../configs/ui.configs";
 import tmdbConfigs from "../api/configs/tmdb.configs";
-import mediaApi from "../api/modules/media.api";
 
 import useUiStore from "../store/uiStore";
 import { useUser } from "../api/queries/user.queries";
@@ -22,7 +21,7 @@ import {
   useAddFavorite,
   useRemoveFavorite,
 } from "../api/queries/favorite.queries";
-import type { Genre, MediaDetail } from "../types";
+import { useMediaDetail } from "../api/queries/media.queries";
 import CastSlide from "../components/common/CastSlide";
 import MediaVideoSlide from "../components/common/MediaVideoSlide";
 import BackdropSlide from "../components/common/BackdropSlide";
@@ -38,35 +37,20 @@ const MediaDetail = () => {
   const addFavorite = useAddFavorite();
   const removeFavorite = useRemoveFavorite();
   const favoritePending = addFavorite.isPending || removeFavorite.isPending;
-  const [media, setMedia] = useState<MediaDetail>();
+  const { data: media } = useMediaDetail(mediaType, mediaId);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [genres, setGenres] = useState<Genre[]>([]);
+  const genres = media?.genres.slice(0, 2) ?? [];
 
-  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
   const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const getMedia = async () => {
-      setGlobalLoading(true);
-      const { response, err } = await mediaApi.getDetail({
-        mediaType,
-        mediaId,
-      });
-      setGlobalLoading(false);
+  }, [mediaType, mediaId]);
 
-      if (response) {
-        setMedia(response);
-        setIsFavorite(response.isFavorite ?? false);
-        setGenres(response.genres.slice(0, 2));
-      }
-
-      if (err) toast.error(err.message);
-    };
-
-    getMedia();
-  }, [mediaType, mediaId, setGlobalLoading]);
+  useEffect(() => {
+    if (media) setIsFavorite(media.isFavorite ?? false);
+  }, [media]);
 
   const onRemoveFavorite = () => {
     if (favoritePending || !media) return;

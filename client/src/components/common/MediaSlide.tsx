@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
 import { SwiperSlide } from "swiper/react";
-import mediaApi from "../../api/modules/media.api";
 import AutoSwiper from "./AutoSwiper";
-import { toast } from "react-toastify";
 import MediaItem from "./MediaItem";
-import type { Media } from "../../types";
+import { useMediaList } from "../../api/queries/media.queries";
 
 const MediaSlide = ({
   mediaType,
@@ -13,21 +10,7 @@ const MediaSlide = ({
   mediaType: string;
   mediaCategory: string;
 }) => {
-  const [medias, setMedias] = useState<Media[]>([]);
-
-  useEffect(() => {
-    const getMedias = async () => {
-      const { response, err } = await mediaApi.getList({
-        mediaType,
-        mediaCategory,
-        page: 1,
-      });
-
-      if (response) setMedias(response.results);
-      if (err) toast.error(err.message);
-    };
-    getMedias();
-  }, [mediaType, mediaCategory]);
+  const { data: medias = [] } = useMediaList(mediaType, mediaCategory);
 
   return (
     <AutoSwiper>
