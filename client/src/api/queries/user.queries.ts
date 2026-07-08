@@ -1,8 +1,19 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import userApi from "../modules/user.api";
 import { unwrap } from "../unwrap";
 import { queryKeys } from "./keys";
 import type { User } from "../../types";
+
+type SigninValues = { username: string; password: string };
+type SignupValues = SigninValues & {
+  confirmPassword: string;
+  displayName: string;
+};
+type PasswordValues = {
+  password: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
 
 export const useUser = () =>
   useQuery({
@@ -20,3 +31,31 @@ export const useLogout = () => {
     qc.removeQueries({ queryKey: queryKeys.favorites });
   };
 };
+
+export const useSignin = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (values: SigninValues) => unwrap<User>(userApi.signin(values)),
+    onSuccess: (user) => {
+      if (user.token) localStorage.setItem("actkn", user.token);
+      qc.setQueryData(queryKeys.user, user);
+    },
+  });
+};
+
+export const useSignup = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (values: SignupValues) => unwrap<User>(userApi.signup(values)),
+    onSuccess: (user) => {
+      if (user.token) localStorage.setItem("actkn", user.token);
+      qc.setQueryData(queryKeys.user, user);
+    },
+  });
+};
+
+export const useUpdatePassword = () =>
+  useMutation({
+    mutationFn: (values: PasswordValues) =>
+      unwrap(userApi.passwordUpdate(values)),
+  });

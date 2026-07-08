@@ -1,21 +1,15 @@
-import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField } from "@mui/material";
 import { useFormik } from "formik";
-import { useState } from "react";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { useQueryClient } from "@tanstack/react-query";
-import userApi from "../../api/modules/user.api";
-import { queryKeys } from "../../api/queries/keys";
+import { useSignup } from "../../api/queries/user.queries";
 import useUiStore from "../../store/uiStore";
 
 const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
-  const qc = useQueryClient();
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
+  const signup = useSignup();
 
-  const [isLoginRequest, setIsLoginRequest] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string>();
-
-  const signinForm = useFormik({
+  const signupForm = useFormik({
     initialValues: {
       password: "",
       username: "",
@@ -37,55 +31,48 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
         .min(8, "confirmPassword minimum 8 characters")
         .required("confirmPassword is required"),
     }),
-    onSubmit: async (values) => {
-      setErrorMessage(undefined);
-      setIsLoginRequest(true);
-      const { response, err } = await userApi.signup(values);
-      setIsLoginRequest(false);
-
-      if (response) {
-        signinForm.resetForm();
-        if (response.token) localStorage.setItem("actkn", response.token);
-        qc.setQueryData(queryKeys.user, response);
-        setAuthModalOpen(false);
-        toast.success("Sign in success");
-      }
-
-      if (err) setErrorMessage(err.message);
+    onSubmit: (values) => {
+      signup.mutate(values, {
+        onSuccess: () => {
+          signupForm.resetForm();
+          setAuthModalOpen(false);
+          toast.success("Sign in success");
+        },
+      });
     },
   });
 
   return (
-    <Box component="form" onSubmit={signinForm.handleSubmit}>
+    <Box component="form" onSubmit={signupForm.handleSubmit}>
       <Stack spacing={3}>
         <TextField
           type="text"
           placeholder="username"
           name="username"
           fullWidth
-          value={signinForm.values.username}
-          onChange={signinForm.handleChange}
+          value={signupForm.values.username}
+          onChange={signupForm.handleChange}
           color="success"
           error={
-            signinForm.touched.username &&
-            signinForm.errors.username !== undefined
+            signupForm.touched.username &&
+            signupForm.errors.username !== undefined
           }
-          helperText={signinForm.touched.username && signinForm.errors.username}
+          helperText={signupForm.touched.username && signupForm.errors.username}
         />
         <TextField
           type="text"
           placeholder="display name"
           name="displayName"
           fullWidth
-          value={signinForm.values.displayName}
-          onChange={signinForm.handleChange}
+          value={signupForm.values.displayName}
+          onChange={signupForm.handleChange}
           color="success"
           error={
-            signinForm.touched.displayName &&
-            signinForm.errors.displayName !== undefined
+            signupForm.touched.displayName &&
+            signupForm.errors.displayName !== undefined
           }
           helperText={
-            signinForm.touched.displayName && signinForm.errors.displayName
+            signupForm.touched.displayName && signupForm.errors.displayName
           }
         />
         <TextField
@@ -93,30 +80,30 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
           placeholder="password"
           name="password"
           fullWidth
-          value={signinForm.values.password}
-          onChange={signinForm.handleChange}
+          value={signupForm.values.password}
+          onChange={signupForm.handleChange}
           color="success"
           error={
-            signinForm.touched.password &&
-            signinForm.errors.password !== undefined
+            signupForm.touched.password &&
+            signupForm.errors.password !== undefined
           }
-          helperText={signinForm.touched.password && signinForm.errors.password}
+          helperText={signupForm.touched.password && signupForm.errors.password}
         />
         <TextField
           type="password"
           placeholder="confirm password"
           name="confirmPassword"
           fullWidth
-          value={signinForm.values.confirmPassword}
-          onChange={signinForm.handleChange}
+          value={signupForm.values.confirmPassword}
+          onChange={signupForm.handleChange}
           color="success"
           error={
-            signinForm.touched.confirmPassword &&
-            signinForm.errors.confirmPassword !== undefined
+            signupForm.touched.confirmPassword &&
+            signupForm.errors.confirmPassword !== undefined
           }
           helperText={
-            signinForm.touched.confirmPassword &&
-            signinForm.errors.confirmPassword
+            signupForm.touched.confirmPassword &&
+            signupForm.errors.confirmPassword
           }
         />
       </Stack>
@@ -127,7 +114,7 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
         size="large"
         variant="contained"
         sx={{ marginTop: 4 }}
-        loading={isLoginRequest}
+        loading={signup.isPending}
       >
         sign up
       </Button>
@@ -135,14 +122,6 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
       <Button fullWidth sx={{ marginTop: 1 }} onClick={() => switchAuthState()}>
         sign in
       </Button>
-
-      {errorMessage && (
-        <Box sx={{ marginTop: 2 }}>
-          <Alert severity="error" variant="outlined">
-            {errorMessage}
-          </Alert>
-        </Box>
-      )}
     </Box>
   );
 };

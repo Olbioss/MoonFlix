@@ -1,18 +1,13 @@
-import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField } from "@mui/material";
 import { useFormik } from "formik";
-import { useState } from "react";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { useQueryClient } from "@tanstack/react-query";
-import userApi from "../../api/modules/user.api";
-import { queryKeys } from "../../api/queries/keys";
+import { useSignin } from "../../api/queries/user.queries";
 import useUiStore from "../../store/uiStore";
 
 const SigninForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
-  const qc = useQueryClient();
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
-  const [isLoginRequest, setIsLoginRequest] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string>();
+  const signin = useSignin();
 
   const signinForm = useFormik({
     initialValues: {
@@ -27,21 +22,14 @@ const SigninForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
         .min(8, "password minimum 8 characters")
         .required("password is required"),
     }),
-    onSubmit: async (values) => {
-      setErrorMessage(undefined);
-      setIsLoginRequest(true);
-      const { response, err } = await userApi.signin(values);
-      setIsLoginRequest(false);
-
-      if (response) {
-        signinForm.resetForm();
-        if (response.token) localStorage.setItem("actkn", response.token);
-        qc.setQueryData(queryKeys.user, response);
-        setAuthModalOpen(false);
-        toast.success("Signed In");
-      }
-
-      if (err) setErrorMessage(err.message);
+    onSubmit: (values) => {
+      signin.mutate(values, {
+        onSuccess: () => {
+          signinForm.resetForm();
+          setAuthModalOpen(false);
+          toast.success("Signed In");
+        },
+      });
     },
   });
 
@@ -83,20 +71,13 @@ const SigninForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
         size="large"
         variant="contained"
         sx={{ marginTop: 4 }}
-        loading={isLoginRequest}
+        loading={signin.isPending}
       >
         sign in
       </Button>
       <Button fullWidth sx={{ marginTop: 1 }} onClick={() => switchAuthState()}>
         sign up
       </Button>
-      {errorMessage && (
-        <Box sx={{ marginTop: 2 }}>
-          <Alert severity="error" variant="outlined">
-            {errorMessage}
-          </Alert>
-        </Box>
-      )}
     </Box>
   );
 };

@@ -1,21 +1,24 @@
 import { Paper, Box, LinearProgress, Toolbar } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useIsFetching } from "@tanstack/react-query";
 import Logo from "./Logo";
-import useUiStore from "../../store/uiStore";
 
 const GlobalLoading = () => {
-  const globalLoading = useUiStore((s) => s.globalLoading);
+  // Show the overlay while any query except the silent background user
+  // revalidation is in flight.
+  const fetching = useIsFetching({
+    predicate: (query) => query.queryKey[0] !== "user",
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (globalLoading) {
+    if (fetching > 0) {
       setIsLoading(true);
     } else {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
+      const timer = setTimeout(() => setIsLoading(false), 500);
+      return () => clearTimeout(timer);
     }
-  }, [globalLoading]);
+  }, [fetching]);
 
   return (
     <>

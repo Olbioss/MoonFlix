@@ -3,19 +3,16 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Container from "../components/common/Container";
 import uiConfigs from "../configs/ui.configs";
-import { useState } from "react";
-import userApi from "../api/modules/user.api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useLogout } from "../api/queries/user.queries";
+import { useLogout, useUpdatePassword } from "../api/queries/user.queries";
 import useUiStore from "../store/uiStore";
 
 const PasswordUpdate = () => {
-  const [onRequest, setOnRequest] = useState(false);
-
   const navigate = useNavigate();
   const logout = useLogout();
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
+  const update = useUpdatePassword();
 
   const form = useFormik({
     initialValues: {
@@ -35,29 +32,18 @@ const PasswordUpdate = () => {
         .min(8, "confirmNewPassword minimum 8 characters")
         .required("confirmNewPassword is required"),
     }),
-    onSubmit: async (values) => onUpdate(values),
+    onSubmit: (values) => {
+      update.mutate(values, {
+        onSuccess: () => {
+          form.resetForm();
+          navigate("/");
+          logout();
+          setAuthModalOpen(true);
+          toast.success("Update password success! Please re-login");
+        },
+      });
+    },
   });
-
-  const onUpdate = async (values: {
-    password: string;
-    newPassword: string;
-    confirmNewPassword: string;
-  }) => {
-    if (onRequest) return;
-    setOnRequest(true);
-
-    const { response, err } = await userApi.passwordUpdate(values);
-    setOnRequest(false);
-
-    if (err) toast.error(err.message);
-    if (response) {
-      form.resetForm();
-      navigate("/");
-      logout();
-      setAuthModalOpen(true);
-      toast.success("Update password success! Please re-login");
-    }
-  };
 
   return (
     <Box sx={{ ...uiConfigs.style.mainContent }}>
@@ -114,7 +100,7 @@ const PasswordUpdate = () => {
               variant="contained"
               fullWidth
               sx={{ marginTop: 4 }}
-              loading={onRequest}
+              loading={update.isPending}
             >
               update password
             </Button>

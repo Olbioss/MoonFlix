@@ -2,6 +2,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import PageWrapper from "./components/common/PageWrapper";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import themeConfigs from "./configs/theme.configs";
@@ -74,6 +75,8 @@ const App = () => {
         </BrowserRouter>
       </ErrorBoundary>
       {/* app routes */}
+
+      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </ThemeProvider>
   );
 };

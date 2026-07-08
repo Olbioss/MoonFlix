@@ -2,21 +2,18 @@ import { create } from "zustand";
 
 interface UiState {
   authModalOpen: boolean;
-  globalLoading: boolean;
   appState: string;
   setAuthModalOpen: (authModalOpen: boolean) => void;
-  setGlobalLoading: (globalLoading: boolean) => void;
   setAppState: (appState: string) => void;
 }
 
-// Transient UI state: auth modal visibility, the global loading overlay, and
-// the active app/route section used to highlight nav items.
+// Transient client UI state: auth-modal visibility and the active app/route
+// section used to highlight nav items. Loading is derived from React Query
+// (useIsFetching) in GlobalLoading, not stored here.
 const useUiStore = create<UiState>((set) => ({
   authModalOpen: false,
-  globalLoading: false,
   appState: "",
   setAuthModalOpen: (authModalOpen) => set({ authModalOpen }),
-  setGlobalLoading: (globalLoading) => set({ globalLoading }),
   setAppState: (appState) => set({ appState }),
 }));
 
