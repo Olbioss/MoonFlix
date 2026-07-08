@@ -7,7 +7,7 @@ import uiConfigs from "../../configs/ui.configs";
 import { routesGen } from "../../routes/routes";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CircularRate from "./CircularRate";
-import useAuthStore from "../../store/authStore";
+import { useFavorites } from "../../api/queries/favorite.queries";
 import favoriteUtils from "../../utils/favorite.utils";
 
 // MediaItem renders items from several sources (browse media, favorites, and
@@ -36,7 +36,7 @@ const MediaItem = ({
   media: MediaItemData;
   mediaType: string;
 }) => {
-  const listFavorites = useAuthStore((s) => s.listFavorites);
+  const { data: listFavorites = [] } = useFavorites();
 
   const [title, setTitle] = useState("");
   const [posterPath, setPosterPath] = useState("");

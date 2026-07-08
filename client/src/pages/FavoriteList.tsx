@@ -1,39 +1,18 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { useState } from "react";
 import MediaItem from "../components/common/MediaItem";
 import Container from "../components/common/Container";
+import MediaGridSkeleton from "../components/common/MediaGridSkeleton";
 import uiConfigs from "../configs/ui.configs";
-import favoriteApi from "../api/modules/favorite.api";
-import useAuthStore from "../store/authStore";
-import useUiStore from "../store/uiStore";
+import {
+  useFavorites,
+  useRemoveFavorite,
+} from "../api/queries/favorite.queries";
 import type { Favorite } from "../types";
 
-const FavoriteItem = ({
-  media,
-  onRemoved,
-}: {
-  media: Favorite;
-  onRemoved: (id: string) => void;
-}) => {
-  const removeFavorite = useAuthStore((s) => s.removeFavorite);
-  const [onRequest, setOnRequest] = useState(false);
-
-  const onRemove = async () => {
-    if (onRequest) return;
-    setOnRequest(true);
-    const { response, err } = await favoriteApi.remove({
-      favoriteId: media.id,
-    });
-    setOnRequest(false);
-
-    if (err) toast.error(err.message);
-    if (response) {
-      removeFavorite({ mediaId: media.mediaId });
-      onRemoved(media.id);
-    }
-  };
+const FavoriteItem = ({ media }: { media: Favorite }) => {
+  const removeFavorite = useRemoveFavorite();
 
   return (
     <>
@@ -44,8 +23,8 @@ const FavoriteItem = ({
         sx={{ marginTop: 2 }}
         startIcon={<DeleteIcon />}
         loadingPosition="start"
-        loading={onRequest}
-        onClick={onRemove}
+        loading={removeFavorite.isPending}
+        onClick={() => removeFavorite.mutate(media.id)}
       >
         remove
       </Button>
@@ -53,58 +32,32 @@ const FavoriteItem = ({
   );
 };
 
+const skip = 8;
+
 const FavoriteList = () => {
-  const [medias, setMedias] = useState<Favorite[]>([]);
-  const [filteredMedias, setFilteredMedias] = useState<Favorite[]>([]);
+  const { data: favorites = [], isLoading } = useFavorites();
   const [page, setPage] = useState(1);
-  const [count, setCount] = useState(0);
-  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
-  const skip = 8;
 
-  useEffect(() => {
-    const getFavorites = async () => {
-      setGlobalLoading(true);
-      const { response, err } = await favoriteApi.getList();
-      setGlobalLoading(false);
-
-      if (err) toast.error(err.message);
-      if (response) {
-        setCount(response.length);
-        setMedias([...response]);
-        setFilteredMedias([...response].splice(0, skip));
-      }
-    };
-
-    getFavorites();
-  }, [setGlobalLoading]);
-
-  const onLoadMore = () => {
-    setFilteredMedias([
-      ...filteredMedias,
-      ...[...medias].splice(page * skip, skip),
-    ]);
-    setPage(page + 1);
-  };
-
-  const onRemoved = (id: string) => {
-    const newMedias = [...medias].filter((e) => e.id !== id);
-    setMedias(newMedias);
-    setFilteredMedias([...newMedias].splice(0, page * skip));
-    setCount(count - 1);
-  };
+  const filteredMedias = favorites.slice(0, page * skip);
 
   return (
     <Box sx={{ ...uiConfigs.style.mainContent }}>
-      <Container header={`Your favorites (${count})`}>
-        <Grid container spacing={1} sx={{ marginRight: "-8px!important" }}>
-          {filteredMedias.map((item, index) => (
-            <Grid item xs={6} sm={4} md={3} key={index}>
-              <FavoriteItem media={item} onRemoved={onRemoved} />
+      <Container header={`Your favorites (${favorites.length})`}>
+        {isLoading ? (
+          <MediaGridSkeleton />
+        ) : (
+          <>
+            <Grid container spacing={1} sx={{ marginRight: "-8px!important" }}>
+              {filteredMedias.map((media) => (
+                <Grid item xs={6} sm={4} md={3} key={media.id}>
+                  <FavoriteItem media={media} />
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-        {filteredMedias.length < medias.length && (
-          <Button onClick={onLoadMore}>load more</Button>
+            {filteredMedias.length < favorites.length && (
+              <Button onClick={() => setPage((p) => p + 1)}>load more</Button>
+            )}
+          </>
         )}
       </Container>
     </Box>

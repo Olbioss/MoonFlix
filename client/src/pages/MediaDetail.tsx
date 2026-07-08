@@ -14,11 +14,14 @@ import ImageHeader from "../components/common/ImageHeader";
 import uiConfigs from "../configs/ui.configs";
 import tmdbConfigs from "../api/configs/tmdb.configs";
 import mediaApi from "../api/modules/media.api";
-import favoriteApi from "../api/modules/favorite.api";
 
-import useAuthStore from "../store/authStore";
 import useUiStore from "../store/uiStore";
 import { useUser } from "../api/queries/user.queries";
+import {
+  useFavorites,
+  useAddFavorite,
+  useRemoveFavorite,
+} from "../api/queries/favorite.queries";
 import type { Genre, MediaDetail } from "../types";
 import CastSlide from "../components/common/CastSlide";
 import MediaVideoSlide from "../components/common/MediaVideoSlide";
@@ -31,14 +34,14 @@ import MediaReview from "../components/common/MediaReview";
 const MediaDetail = () => {
   const { mediaType = "", mediaId = "" } = useParams();
   const { data: user } = useUser();
-  const listFavorites = useAuthStore((s) => s.listFavorites);
+  const { data: listFavorites = [] } = useFavorites();
+  const addFavorite = useAddFavorite();
+  const removeFavorite = useRemoveFavorite();
+  const favoritePending = addFavorite.isPending || removeFavorite.isPending;
   const [media, setMedia] = useState<MediaDetail>();
   const [isFavorite, setIsFavorite] = useState(false);
-  const [onRequest, setOnRequest] = useState(false);
   const [genres, setGenres] = useState<Genre[]>([]);
 
-  const addFavorite = useAuthStore((s) => s.addFavorite);
-  const removeFavorite = useAuthStore((s) => s.removeFavorite);
   const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
   const videoRef = useRef<HTMLDivElement>(null);
@@ -65,66 +68,46 @@ const MediaDetail = () => {
     getMedia();
   }, [mediaType, mediaId, setGlobalLoading]);
 
-  const onFavoriteClick = async () => {
+  const onRemoveFavorite = () => {
+    if (favoritePending || !media) return;
+
+    const favorite = listFavorites.find(
+      (e) => e.mediaId.toString() === media.id.toString(),
+    );
+    if (!favorite) return;
+
+    removeFavorite.mutate(favorite.id, {
+      onSuccess: () => {
+        setIsFavorite(false);
+        toast.success("Remove favorite success");
+      },
+    });
+  };
+
+  const onFavoriteClick = () => {
     if (!user) return setAuthModalOpen(true);
-
-    if (onRequest) return;
-
-    if (!media) return;
+    if (favoritePending || !media) return;
 
     if (isFavorite) {
       onRemoveFavorite();
       return;
     }
 
-    setOnRequest(true);
-
-    const body = {
-      mediaId: media.id,
-      mediaTitle: media.title || media.name || "",
-      mediaType: mediaType,
-      mediaPoster: media.poster_path || "",
-      mediaRate: media.vote_average ?? 0,
-    };
-
-    const { response, err } = await favoriteApi.add(body);
-
-    setOnRequest(false);
-
-    if (err) toast.error(err.message);
-    if (response) {
-      addFavorite(response);
-      setIsFavorite(true);
-      toast.success("Add favorite success");
-    }
-  };
-
-  const onRemoveFavorite = async () => {
-    if (onRequest) return;
-    if (!media) return;
-    setOnRequest(true);
-
-    const favorite = listFavorites.find(
-      (e) => e.mediaId.toString() === media.id.toString(),
+    addFavorite.mutate(
+      {
+        mediaId: media.id,
+        mediaTitle: media.title || media.name || "",
+        mediaType,
+        mediaPoster: media.poster_path || "",
+        mediaRate: media.vote_average ?? 0,
+      },
+      {
+        onSuccess: () => {
+          setIsFavorite(true);
+          toast.success("Add favorite success");
+        },
+      },
     );
-
-    if (!favorite) {
-      setOnRequest(false);
-      return;
-    }
-
-    const { response, err } = await favoriteApi.remove({
-      favoriteId: favorite.id,
-    });
-
-    setOnRequest(false);
-
-    if (err) toast.error(err.message);
-    if (response) {
-      removeFavorite(favorite);
-      setIsFavorite(false);
-      toast.success("Remove favorite success");
-    }
   };
 
   return media ? (
@@ -231,7 +214,7 @@ const MediaDetail = () => {
                       )
                     }
                     loadingPosition="start"
-                    loading={onRequest}
+                    loading={favoritePending}
                     onClick={onFavoriteClick}
                   />
                   <Button
