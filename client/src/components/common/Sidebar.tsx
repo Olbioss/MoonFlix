@@ -16,7 +16,7 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 
 import { themeModes } from "../../configs/theme.configs";
-import useAuthStore from "../../store/authStore";
+import { useUser } from "../../api/queries/user.queries";
 import useThemeStore from "../../store/themeStore";
 import useUiStore from "../../store/uiStore";
 
@@ -27,7 +27,7 @@ const Sidebar = ({
   open: boolean;
   toggleSidebar: (value?: boolean) => void;
 }) => {
-  const user = useAuthStore((s) => s.user);
+  const { data: user } = useUser();
   const appState = useUiStore((s) => s.appState);
   const themeMode = useThemeStore((s) => s.themeMode);
   const setThemeMode = useThemeStore((s) => s.setThemeMode);

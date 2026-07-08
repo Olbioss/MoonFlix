@@ -7,14 +7,14 @@ import { useState } from "react";
 import userApi from "../api/modules/user.api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../store/authStore";
+import { useLogout } from "../api/queries/user.queries";
 import useUiStore from "../store/uiStore";
 
 const PasswordUpdate = () => {
   const [onRequest, setOnRequest] = useState(false);
 
   const navigate = useNavigate();
-  const setUser = useAuthStore((s) => s.setUser);
+  const logout = useLogout();
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
 
   const form = useFormik({
@@ -53,7 +53,7 @@ const PasswordUpdate = () => {
     if (response) {
       form.resetForm();
       navigate("/");
-      setUser(null);
+      logout();
       setAuthModalOpen(true);
       toast.success("Update password success! Please re-login");
     }

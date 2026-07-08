@@ -3,12 +3,13 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
+import { useQueryClient } from "@tanstack/react-query";
 import userApi from "../../api/modules/user.api";
-import useAuthStore from "../../store/authStore";
+import { queryKeys } from "../../api/queries/keys";
 import useUiStore from "../../store/uiStore";
 
 const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
-  const setUser = useAuthStore((s) => s.setUser);
+  const qc = useQueryClient();
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
 
   const [isLoginRequest, setIsLoginRequest] = useState(false);
@@ -44,7 +45,8 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
 
       if (response) {
         signinForm.resetForm();
-        setUser(response);
+        if (response.token) localStorage.setItem("actkn", response.token);
+        qc.setQueryData(queryKeys.user, response);
         setAuthModalOpen(false);
         toast.success("Sign in success");
       }

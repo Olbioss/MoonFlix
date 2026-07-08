@@ -18,6 +18,7 @@ import favoriteApi from "../api/modules/favorite.api";
 
 import useAuthStore from "../store/authStore";
 import useUiStore from "../store/uiStore";
+import { useUser } from "../api/queries/user.queries";
 import type { Genre, MediaDetail } from "../types";
 import CastSlide from "../components/common/CastSlide";
 import MediaVideoSlide from "../components/common/MediaVideoSlide";
@@ -29,7 +30,7 @@ import MediaReview from "../components/common/MediaReview";
 
 const MediaDetail = () => {
   const { mediaType = "", mediaId = "" } = useParams();
-  const user = useAuthStore((s) => s.user);
+  const { data: user } = useUser();
   const listFavorites = useAuthStore((s) => s.listFavorites);
   const [media, setMedia] = useState<MediaDetail>();
   const [isFavorite, setIsFavorite] = useState(false);

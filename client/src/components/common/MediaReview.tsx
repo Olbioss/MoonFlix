@@ -11,7 +11,7 @@ import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
-import useAuthStore from "../../store/authStore";
+import { useUser } from "../../api/queries/user.queries";
 import Container from "./Container";
 import reviewApi from "../../api/modules/review.api";
 import TextAvatar from "./TextAvatar";
@@ -24,7 +24,7 @@ const ReviewItem = ({
   review: Review;
   onRemoved: (id: string) => void;
 }) => {
-  const user = useAuthStore((s) => s.user);
+  const { data: user } = useUser();
 
   const [onRequest, setOnRequest] = useState(false);
 
@@ -96,7 +96,7 @@ const MediaReview = ({
   media: MediaDetail;
   mediaType: string;
 }) => {
-  const user = useAuthStore((s) => s.user);
+  const { data: user } = useUser();
   const [listReviews, setListReviews] = useState<Review[]>([]);
   const [filteredReviews, setFilteredReviews] = useState<Review[]>([]);
   const [page, setPage] = useState(1);

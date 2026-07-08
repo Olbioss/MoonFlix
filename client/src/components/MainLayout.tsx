@@ -6,25 +6,13 @@ import Topbar from "./common/Topbar";
 import AuthModal from "./common/AuthModal";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import userApi from "../api/modules/user.api";
 import favoriteApi from "../api/modules/favorite.api";
 import useAuthStore from "../store/authStore";
+import { useUser } from "../api/queries/user.queries";
 
 const MainLayout = () => {
-  const user = useAuthStore((s) => s.user);
-  const setUser = useAuthStore((s) => s.setUser);
+  const { data: user } = useUser();
   const setListFavorites = useAuthStore((s) => s.setListFavorites);
-
-  useEffect(() => {
-    const authUser = async () => {
-      const { response, err } = await userApi.getInfo();
-
-      if (response) setUser(response);
-      if (err) setUser(null);
-    };
-
-    authUser();
-  }, [setUser]);
 
   useEffect(() => {
     const getFavorites = async () => {

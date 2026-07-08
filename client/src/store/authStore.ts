@@ -1,28 +1,17 @@
 import { create } from "zustand";
-import type { Favorite, User } from "../types";
+import type { Favorite } from "../types";
 
 interface AuthState {
-  user: User | null;
   listFavorites: Favorite[];
-  setUser: (user: User | null) => void;
   setListFavorites: (favorites: Favorite[]) => void;
   addFavorite: (favorite: Favorite) => void;
   removeFavorite: (payload: { mediaId: string | number }) => void;
 }
 
-// Auth + favorites. `setUser(null)` also clears the persisted access token,
-// preserving the side effect that previously lived inside the Redux reducer.
+// Favorites list. The authenticated user now lives in the React Query
+// ["user"] cache (see api/queries/user.queries.ts).
 const useAuthStore = create<AuthState>((set) => ({
-  user: null,
   listFavorites: [],
-  setUser: (user) => {
-    if (user === null) {
-      localStorage.removeItem("actkn");
-    } else if (user.token) {
-      localStorage.setItem("actkn", user.token);
-    }
-    set({ user });
-  },
   setListFavorites: (listFavorites) => set({ listFavorites }),
   addFavorite: (favorite) =>
     set((state) => ({ listFavorites: [favorite, ...state.listFavorites] })),

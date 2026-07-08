@@ -14,7 +14,7 @@ import { cloneElement, useState, type ReactElement } from "react";
 import { Link } from "react-router-dom";
 import menuConfigs from "../../configs/menu.configs";
 import { themeModes } from "../../configs/theme.configs";
-import useAuthStore from "../../store/authStore";
+import { useUser } from "../../api/queries/user.queries";
 import useThemeStore from "../../store/themeStore";
 import useUiStore from "../../store/uiStore";
 import Logo from "./Logo";
@@ -52,7 +52,7 @@ const ScrollAppbar = ({
 };
 
 const Topbar = () => {
-  const user = useAuthStore((s) => s.user);
+  const { data: user } = useUser();
   const appState = useUiStore((s) => s.appState);
   const themeMode = useThemeStore((s) => s.themeMode);
   const [sidebarOpen, setSidebarOpen] = useState(false);

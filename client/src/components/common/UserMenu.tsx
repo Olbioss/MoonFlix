@@ -9,11 +9,11 @@ import {
 import { useState, type MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import menuConfigs from "../../configs/menu.configs";
-import useAuthStore from "../../store/authStore";
+import { useUser, useLogout } from "../../api/queries/user.queries";
 
 const UserMenu = () => {
-  const user = useAuthStore((s) => s.user);
-  const setUser = useAuthStore((s) => s.setUser);
+  const { data: user } = useUser();
+  const logout = useLogout();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
@@ -57,10 +57,7 @@ const UserMenu = () => {
                 />
               </ListItemButton>
             ))}
-            <ListItemButton
-              sx={{ borderRadius: "10px" }}
-              onClick={() => setUser(null)}
-            >
+            <ListItemButton sx={{ borderRadius: "10px" }} onClick={logout}>
               <ListItemIcon>
                 <LogoutOutlinedIcon />
               </ListItemIcon>

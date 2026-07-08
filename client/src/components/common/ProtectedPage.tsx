@@ -1,14 +1,16 @@
 import { useEffect, type ReactNode } from "react";
-import useAuthStore from "../../store/authStore";
 import useUiStore from "../../store/uiStore";
+import { useUser } from "../../api/queries/user.queries";
 
 const ProtectedPage = ({ children }: { children: ReactNode }) => {
-  const user = useAuthStore((s) => s.user);
+  const { data: user, isLoading } = useUser();
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
 
   useEffect(() => {
-    setAuthModalOpen(!user);
-  }, [user, setAuthModalOpen]);
+    // Don't prompt for sign-in until the (possibly persisted) user query has
+    // settled, to avoid flashing the auth modal during revalidation.
+    if (!isLoading) setAuthModalOpen(!user);
+  }, [user, isLoading, setAuthModalOpen]);
 
   return user ? children : null;
 };
