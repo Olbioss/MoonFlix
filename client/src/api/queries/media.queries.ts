@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import mediaApi from "../modules/media.api";
 import genreApi from "../modules/genre.api";
 import { unwrap } from "../unwrap";
@@ -34,4 +34,35 @@ export const useMediaDetail = (mediaType: string, mediaId: string) =>
     queryFn: () =>
       unwrap<MediaDetail>(mediaApi.getDetail({ mediaType, mediaId })),
     enabled: !!mediaType && !!mediaId,
+  });
+
+// Paginated browse ("load more"). TMDB's endpoint here doesn't return a total,
+// so we advance the page until a page comes back empty.
+export const useInfiniteMediaList = (
+  mediaType: string,
+  mediaCategory: string,
+) =>
+  useInfiniteQuery({
+    queryKey: queryKeys.mediaList(mediaType, mediaCategory),
+    queryFn: ({ pageParam }) =>
+      unwrap<{ results: Media[] }>(
+        mediaApi.getList({ mediaType, mediaCategory, page: pageParam }),
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (last, pages) =>
+      last.results.length > 0 ? pages.length + 1 : undefined,
+    enabled: !!mediaType && !!mediaCategory,
+  });
+
+export const useSearchMedia = (mediaType: string, query: string) =>
+  useInfiniteQuery({
+    queryKey: queryKeys.search(mediaType, query),
+    queryFn: ({ pageParam }) =>
+      unwrap<{ results: Media[] }>(
+        mediaApi.search({ mediaType, query, page: pageParam }),
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (last, pages) =>
+      last.results.length > 0 ? pages.length + 1 : undefined,
+    enabled: query.trim().length > 0,
   });

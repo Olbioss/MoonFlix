@@ -2,74 +2,34 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import tmdbConfigs from "../api/configs/tmdb.configs";
-import mediaApi from "../api/modules/media.api";
 import uiConfigs from "../configs/ui.configs";
 import HeroSlide from "../components/common/HeroSlide";
 import MediaGrid from "../components/common/MediaGrid";
 import MediaGridSkeleton from "../components/common/MediaGridSkeleton";
 import useUiStore from "../store/uiStore";
-import usePrevious from "../hooks/usePrevious";
-import type { Media } from "../types";
-import { toast } from "react-toastify";
+import { useInfiniteMediaList } from "../api/queries/media.queries";
 
 const MediaList = () => {
   const { mediaType = "" } = useParams();
-
-  const [medias, setMedias] = useState<Media[]>([]);
-  const [mediaLoading, setMediaLoading] = useState(false);
   const [currCategory, setCurrCategory] = useState(0);
-  const [currPage, setCurrPage] = useState(1);
-
-  const prevMediaType = usePrevious(mediaType);
   const setAppState = useUiStore((s) => s.setAppState);
-  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
 
   const mediaCategories = useMemo(() => ["popular", "top_rated"], []);
   const category = ["popular", "top rated"];
+
+  const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
+    useInfiniteMediaList(mediaType, mediaCategories[currCategory]);
+  const medias = data?.pages.flatMap((p) => p.results) ?? [];
 
   useEffect(() => {
     setAppState(mediaType);
     window.scrollTo(0, 0);
   }, [mediaType, setAppState]);
 
-  useEffect(() => {
-    const getMedias = async () => {
-      if (currPage === 1) setGlobalLoading(true);
-      setMediaLoading(true);
-
-      const { response, err } = await mediaApi.getList({
-        mediaType,
-        mediaCategory: mediaCategories[currCategory],
-        page: currPage,
-      });
-
-      setMediaLoading(false);
-      setGlobalLoading(false);
-
-      if (err) toast.error(err.message);
-      if (response) {
-        if (currPage !== 1) setMedias((m) => [...m, ...response.results]);
-        else setMedias([...response.results]);
-      }
-    };
-    getMedias();
-  }, [
-    mediaType,
-    currCategory,
-    currPage,
-    prevMediaType,
-    mediaCategories,
-    setGlobalLoading,
-  ]);
-
   const onCategoryChange = (categoryIndex: number) => {
     if (currCategory === categoryIndex) return;
-    setMedias([]);
-    setCurrPage(1);
     setCurrCategory(categoryIndex);
   };
-
-  const onLoadMore = () => setCurrPage(currPage + 1);
 
   return (
     <>
@@ -107,20 +67,22 @@ const MediaList = () => {
             ))}
           </Stack>
         </Stack>
-        {mediaLoading && medias.length === 0 ? (
+        {isLoading ? (
           <MediaGridSkeleton />
         ) : (
           <MediaGrid medias={medias} mediaType={mediaType} />
         )}
-        <Button
-          sx={{ marginTop: 8 }}
-          fullWidth
-          color="primary"
-          loading={mediaLoading}
-          onClick={onLoadMore}
-        >
-          load more
-        </Button>
+        {medias.length > 0 && hasNextPage && (
+          <Button
+            sx={{ marginTop: 8 }}
+            fullWidth
+            color="primary"
+            loading={isFetching}
+            onClick={() => fetchNextPage()}
+          >
+            load more
+          </Button>
+        )}
       </Box>
     </>
   );
