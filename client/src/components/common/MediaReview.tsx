@@ -12,8 +12,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import { useUser } from "../../api/queries/user.queries";
+import {
+  useAddReview,
+  useRemoveReview,
+} from "../../api/queries/review.queries";
 import Container from "./Container";
-import reviewApi from "../../api/modules/review.api";
 import TextAvatar from "./TextAvatar";
 import type { MediaDetail, Review } from "../../types";
 
@@ -25,18 +28,7 @@ const ReviewItem = ({
   onRemoved: (id: string) => void;
 }) => {
   const { data: user } = useUser();
-
-  const [onRequest, setOnRequest] = useState(false);
-
-  const onRemove = async () => {
-    if (onRequest) return;
-    setOnRequest(true);
-
-    const { response, err } = await reviewApi.remove({ reviewId: review.id });
-
-    if (err) toast.error(err.message);
-    if (response) onRemoved(review.id);
-  };
+  const removeReview = useRemoveReview();
 
   return (
     <Box
@@ -44,7 +36,7 @@ const ReviewItem = ({
         padding: 2,
         borderRadius: "5px",
         position: "relative",
-        opacity: onRequest ? 0.6 : 1,
+        opacity: removeReview.isPending ? 0.6 : 1,
         "&:hover": { backgroundColor: "background.paper" },
       }}
     >
@@ -69,8 +61,12 @@ const ReviewItem = ({
               variant="contained"
               startIcon={<DeleteIcon />}
               loadingPosition="start"
-              loading={onRequest}
-              onClick={onRemove}
+              loading={removeReview.isPending}
+              onClick={() =>
+                removeReview.mutate(review.id, {
+                  onSuccess: () => onRemoved(review.id),
+                })
+              }
               sx={{
                 position: { xs: "relative", md: "absolute" },
                 right: { xs: 0, md: "10px" },
@@ -87,6 +83,8 @@ const ReviewItem = ({
   );
 };
 
+const skip = 4;
+
 const MediaReview = ({
   reviews,
   media,
@@ -97,14 +95,12 @@ const MediaReview = ({
   mediaType: string;
 }) => {
   const { data: user } = useUser();
+  const addReview = useAddReview();
   const [listReviews, setListReviews] = useState<Review[]>([]);
   const [filteredReviews, setFilteredReviews] = useState<Review[]>([]);
   const [page, setPage] = useState(1);
-  const [onRequest, setOnRequest] = useState(false);
   const [content, setContent] = useState("");
   const [reviewCount, setReviewCount] = useState(0);
-
-  const skip = 4;
 
   useEffect(() => {
     setListReviews([...reviews]);
@@ -112,30 +108,24 @@ const MediaReview = ({
     setReviewCount(reviews.length);
   }, [reviews]);
 
-  const onAddReview = async () => {
-    if (onRequest) return;
-    setOnRequest(true);
-
-    const body = {
-      content,
-      mediaId: media.id,
-      mediaType,
-      mediaTitle: media.title || media.name || "",
-      mediaPoster: media.poster_path || "",
-    };
-
-    const { response, err } = await reviewApi.add(body);
-
-    setOnRequest(false);
-
-    if (err) toast.error(err.message);
-    if (response) {
-      toast.success("Post review success");
-
-      setFilteredReviews([...filteredReviews, response]);
-      setReviewCount(reviewCount + 1);
-      setContent("");
-    }
+  const onAddReview = () => {
+    addReview.mutate(
+      {
+        content,
+        mediaId: media.id,
+        mediaType,
+        mediaTitle: media.title || media.name || "",
+        mediaPoster: media.poster_path || "",
+      },
+      {
+        onSuccess: (newReview) => {
+          setFilteredReviews([...filteredReviews, newReview]);
+          setReviewCount(reviewCount + 1);
+          setContent("");
+          toast.success("Post review success");
+        },
+      },
+    );
   };
 
   const onLoadMore = () => {
@@ -203,7 +193,7 @@ const MediaReview = ({
                   sx={{ width: "max-content" }}
                   startIcon={<SendOutlinedIcon />}
                   loadingPosition="start"
-                  loading={onRequest}
+                  loading={addReview.isPending}
                   onClick={onAddReview}
                 >
                   post

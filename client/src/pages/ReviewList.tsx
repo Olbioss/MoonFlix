@@ -1,37 +1,17 @@
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import tmdbConfigs from "../api/configs/tmdb.configs";
-import reviewApi from "../api/modules/review.api";
 import Container from "../components/common/Container";
 import uiConfigs from "../configs/ui.configs";
-import useUiStore from "../store/uiStore";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { routesGen } from "../routes/routes";
+import { useReviews, useRemoveReview } from "../api/queries/review.queries";
 import type { Review } from "../types";
 
-const ReviewItem = ({
-  review,
-  onRemoved,
-}: {
-  review: Review;
-  onRemoved: (id: string) => void;
-}) => {
-  const [onRequest, setOnRequest] = useState(false);
-
-  const onRemove = async () => {
-    if (onRequest) return;
-    setOnRequest(true);
-    const { response, err } = await reviewApi.remove({ reviewId: review.id });
-    setOnRequest(false);
-
-    if (err) toast.error(err.message);
-    if (response) {
-      onRemoved(review.id);
-    }
-  };
+const ReviewItem = ({ review }: { review: Review }) => {
+  const removeReview = useRemoveReview();
 
   return (
     <Box
@@ -40,7 +20,7 @@ const ReviewItem = ({
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
         padding: 1,
-        opacity: onRequest ? 0.6 : 1,
+        opacity: removeReview.isPending ? 0.6 : 1,
         "&:hover": { backgroundColor: "background.paper" },
       }}
     >
@@ -93,8 +73,8 @@ const ReviewItem = ({
         }}
         startIcon={<DeleteIcon />}
         loadingPosition="start"
-        loading={onRequest}
-        onClick={onRemove}
+        loading={removeReview.isPending}
+        onClick={() => removeReview.mutate(review.id)}
       >
         remove
       </Button>
@@ -102,62 +82,26 @@ const ReviewItem = ({
   );
 };
 
+const skip = 8;
+
 const ReviewList = () => {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [filteredReviews, setFilteredReviews] = useState<Review[]>([]);
+  const { data: reviews = [] } = useReviews();
   const [page, setPage] = useState(1);
-  const [count, setCount] = useState(0);
-  const setGlobalLoading = useUiStore((s) => s.setGlobalLoading);
-  const skip = 8;
 
-  useEffect(() => {
-    const getReviews = async () => {
-      setGlobalLoading(true);
-      const { response, err } = await reviewApi.getList();
-      setGlobalLoading(false);
-
-      if (err) toast.error(err.message);
-      if (response) {
-        setCount(response.length);
-        setReviews([...response]);
-        setFilteredReviews([...response].splice(0, skip));
-      }
-    };
-
-    getReviews();
-  }, [setGlobalLoading]);
-
-  const onLoadMore = () => {
-    setFilteredReviews([
-      ...filteredReviews,
-      ...[...reviews].splice(page * skip, skip),
-    ]);
-    setPage(page + 1);
-  };
-
-  const onRemoved = (id: string) => {
-    const newReviews = [...reviews].filter((e) => e.id !== id);
-    setReviews(newReviews);
-    setFilteredReviews([...newReviews].splice(0, page * skip));
-    setCount(count - 1);
-  };
+  const filteredReviews = reviews.slice(0, page * skip);
 
   return (
     <Box sx={{ ...uiConfigs.style.mainContent }}>
-      <Container header={`Your reviews (${count})`}>
+      <Container header={`Your reviews (${reviews.length})`}>
         <Stack spacing={2}>
           {filteredReviews.map((item) => (
             <Box key={item.id}>
-              <ReviewItem review={item} onRemoved={onRemoved} />
-              <Divider
-                sx={{
-                  display: { xs: "block", md: "none" },
-                }}
-              />
+              <ReviewItem review={item} />
+              <Divider sx={{ display: { xs: "block", md: "none" } }} />
             </Box>
           ))}
           {filteredReviews.length < reviews.length && (
-            <Button onClick={onLoadMore}>load more</Button>
+            <Button onClick={() => setPage((p) => p + 1)}>load more</Button>
           )}
         </Stack>
       </Container>
