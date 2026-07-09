@@ -18,17 +18,17 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
     },
     validationSchema: Yup.object({
       username: Yup.string()
-        .min(5, "username minimum 5 characters")
+        .min(5, "username must be at least 5 characters")
         .required("username is required"),
       password: Yup.string()
-        .min(8, "password minimum 8 characters")
+        .min(8, "password must be at least 8 characters")
         .required("password is required"),
       displayName: Yup.string()
-        .min(8, "displayName minimum 8 characters")
+        .min(8, "displayName must be at least 8 characters")
         .required("displayName is required"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password")], "confirmPassword not match")
-        .min(8, "confirmPassword minimum 8 characters")
+        .min(8, "confirmPassword must be at least 8 characters")
         .required("confirmPassword is required"),
     }),
     onSubmit: (values) => {
@@ -36,7 +36,7 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
         onSuccess: () => {
           signupForm.resetForm();
           setAuthModalOpen(false);
-          toast.success("Sign in success");
+          toast.success("Sign up success");
         },
       });
     },
