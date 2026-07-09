@@ -31,6 +31,8 @@ const GlobalLoading = () => {
           width: "100vw",
           height: "100vh",
           zIndex: 999,
+          border: "none",
+          backgroundColor: "background.default",
         }}
       >
         <Toolbar />

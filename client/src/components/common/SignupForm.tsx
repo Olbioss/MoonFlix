@@ -52,7 +52,7 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
           fullWidth
           value={signupForm.values.username}
           onChange={signupForm.handleChange}
-          color="success"
+          color="primary"
           error={
             signupForm.touched.username &&
             signupForm.errors.username !== undefined
@@ -66,7 +66,7 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
           fullWidth
           value={signupForm.values.displayName}
           onChange={signupForm.handleChange}
-          color="success"
+          color="primary"
           error={
             signupForm.touched.displayName &&
             signupForm.errors.displayName !== undefined
@@ -82,7 +82,7 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
           fullWidth
           value={signupForm.values.password}
           onChange={signupForm.handleChange}
-          color="success"
+          color="primary"
           error={
             signupForm.touched.password &&
             signupForm.errors.password !== undefined
@@ -96,7 +96,7 @@ const SignupForm = ({ switchAuthState }: { switchAuthState: () => void }) => {
           fullWidth
           value={signupForm.values.confirmPassword}
           onChange={signupForm.handleChange}
-          color="success"
+          color="primary"
           error={
             signupForm.touched.confirmPassword &&
             signupForm.errors.confirmPassword !== undefined

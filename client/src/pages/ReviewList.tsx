@@ -57,14 +57,14 @@ const ReviewItem = ({ review }: { review: Review }) => {
               {review.mediaTitle}
             </Typography>
           </Link>
-          <Typography variant="caption">
+          <Typography variant="caption" color="text.secondary">
             {dayjs(review.createdAt).format("DD-MM-YYYY HH:mm:ss")}
           </Typography>
           <Typography>{review.content}</Typography>
         </Stack>
       </Box>
       <Button
-        variant="contained"
+        variant="outlined"
         sx={{
           position: { xs: "relative", md: "absolute" },
           right: { xs: 0, md: "10px" },

@@ -19,7 +19,7 @@ const FavoriteItem = ({ media }: { media: Favorite }) => {
       <MediaItem media={media} mediaType={media.mediaType} />
       <Button
         fullWidth
-        variant="contained"
+        variant="outlined"
         sx={{ marginTop: 2 }}
         startIcon={<DeleteIcon />}
         loadingPosition="start"

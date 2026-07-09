@@ -57,7 +57,7 @@ const PasswordUpdate = () => {
               fullWidth
               value={form.values.password}
               onChange={form.handleChange}
-              color="success"
+              color="primary"
               error={
                 form.touched.password && form.errors.password !== undefined
               }
@@ -70,7 +70,7 @@ const PasswordUpdate = () => {
               fullWidth
               value={form.values.newPassword}
               onChange={form.handleChange}
-              color="success"
+              color="primary"
               error={
                 form.touched.newPassword &&
                 form.errors.newPassword !== undefined
@@ -84,7 +84,7 @@ const PasswordUpdate = () => {
               fullWidth
               value={form.values.confirmNewPassword}
               onChange={form.handleChange}
-              color="success"
+              color="primary"
               error={
                 form.touched.confirmNewPassword &&
                 form.errors.confirmNewPassword !== undefined

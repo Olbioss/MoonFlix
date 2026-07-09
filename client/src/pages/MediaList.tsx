@@ -45,7 +45,7 @@ const MediaList = () => {
           spacing={2}
           sx={{ marginBottom: 4 }}
         >
-          <Typography fontWeight="700" variant="h5">
+          <Typography variant="h5" textTransform="uppercase" letterSpacing="0.22em">
             {mediaType === tmdbConfigs.mediaType.movie ? "Movies" : "Tv Series"}
           </Typography>
           <Stack direction="row" spacing={2}>
@@ -76,6 +76,7 @@ const MediaList = () => {
           <Button
             sx={{ marginTop: 8 }}
             fullWidth
+            variant="outlined"
             color="primary"
             loading={isFetching}
             onClick={() => fetchNextPage()}

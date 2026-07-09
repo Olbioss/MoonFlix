@@ -53,7 +53,7 @@ const MediaSearch = () => {
             ))}
           </Stack>
           <TextField
-            color="success"
+            color="primary"
             placeholder="Search MoonFlix"
             sx={{ width: "100%" }}
             autoFocus
