@@ -35,7 +35,7 @@ git clone git@github.com:Olbioss/MoonFlix.git && cd MoonFlix
 cd server
 cp .env.example .env        # fill in MONGODB_URL, TOKEN_SECRET, TMDB_KEY
 pnpm install
-pnpm start                  # http://127.0.0.1:5001 (node --watch)
+pnpm dev                    # http://127.0.0.1:5001 (node --watch)
 
 # client (new terminal)
 cd client
@@ -59,7 +59,7 @@ pnpm dev                    # http://localhost:5173
 | --- | --- | --- |
 | `client/` | `pnpm dev` / `pnpm build` / `pnpm preview` | Vite dev server / type-check + build / serve the build |
 | `client/` | `pnpm exec vitest run` / `pnpm lint` / `pnpm format` | tests / ESLint / Prettier |
-| `server/` | `pnpm start` / `pnpm test` | API with watch reload / tests |
+| `server/` | `pnpm dev` / `pnpm start` / `pnpm test` | API with watch reload / production start / tests |
 
 ## Design — "Selene"
 
