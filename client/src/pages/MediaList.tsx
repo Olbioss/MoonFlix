@@ -31,8 +31,13 @@ const MediaList = () => {
 
   useEffect(() => {
     setAppState(mediaType);
+    if (isValidType) {
+      document.title = `MoonFlix · ${
+        mediaType === tmdbConfigs.mediaType.movie ? "Movies" : "TV Series"
+      }`;
+    }
     window.scrollTo(0, 0);
-  }, [mediaType, setAppState]);
+  }, [mediaType, setAppState, isValidType]);
 
   const onCategoryChange = (categoryIndex: number) => {
     if (currCategory === categoryIndex) return;

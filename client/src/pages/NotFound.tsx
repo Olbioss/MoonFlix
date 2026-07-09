@@ -1,10 +1,15 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import Logo from "../components/common/Logo";
 import uiConfigs from "../configs/ui.configs";
 
 const NotFound = () => {
+  useEffect(() => {
+    document.title = "MoonFlix · Lost in orbit";
+  }, []);
+
   return (
     <Box
       sx={{
