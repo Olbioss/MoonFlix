@@ -14,9 +14,12 @@ importers:
       '@emotion/styled':
         specifier: ^11.11.5
         version: 11.13.0(@emotion/react@11.13.3(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react@19.2.7)
-      '@fontsource/roboto':
-        specifier: ^5.0.13
-        version: 5.0.15
+      '@fontsource/archivo':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/marcellus':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@mui/icons-material':
         specifier: ^6.5.0
         version: 6.5.0(@mui/material@6.5.0(@emotion/react@11.13.3(@types/react@19.2.17)(react@19.2.7))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.17)(react@19.2.7)
@@ -524,8 +527,11 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@fontsource/roboto@5.0.15':
-    resolution: {integrity: sha512-352XiID9jfwmYaHpdmS3ocGJi3PA+vOm4HzJIRfSyPEyLP6dZN8iiEKUbdAfB5YXQO3YxO2KZpR+R28q2zMiYw==}
+  '@fontsource/archivo@5.2.8':
+    resolution: {integrity: sha512-Fc4yuMt85MmcYooUVpYHAJRJTymPv2+J9HsMP2f5mxR/0pIWgE2V5XfgNTavPpklX2rJFprdT36iE6Rr8ds9MA==}
+
+  '@fontsource/marcellus@5.2.8':
+    resolution: {integrity: sha512-JHn6y1lz5IBjwqmwy4JSOIg2OV8X5UnbB4hGRUDaSlfViXghS6/4pX4CoRzFtQDIkH7axGCS+6kbdTVuYxBKDw==}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -2809,7 +2815,9 @@ snapshots:
 
   '@exodus/bytes@1.15.1': {}
 
-  '@fontsource/roboto@5.0.15': {}
+  '@fontsource/archivo@5.2.8': {}
+
+  '@fontsource/marcellus@5.2.8': {}
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:

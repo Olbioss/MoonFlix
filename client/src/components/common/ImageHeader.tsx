@@ -1,9 +1,7 @@
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import uiConfigs from "../../configs/ui.configs";
 
 const ImageHeader = ({ imgPath }: { imgPath: string }) => {
-  const theme = useTheme();
-
   return (
     <Box
       sx={{
@@ -22,7 +20,7 @@ const ImageHeader = ({ imgPath }: { imgPath: string }) => {
           width: "100%",
           height: "100%",
           pointerEvents: "none",
-          ...uiConfigs.style.gradientBgImage[theme.palette.mode],
+          ...uiConfigs.style.gradientBgImage,
         },
       }}
     />

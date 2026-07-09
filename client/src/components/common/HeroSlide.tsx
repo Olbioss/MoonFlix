@@ -6,7 +6,6 @@ import {
   Divider,
   Stack,
   Typography,
-  useTheme,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Autoplay } from "swiper/modules";
@@ -28,8 +27,6 @@ const HeroSlide = ({
   mediaType: string;
   mediaCategory: string;
 }) => {
-  const theme = useTheme();
-
   const { data: genres = [] } = useGenres(mediaType);
   const { data: movies = [] } = useMediaList(mediaType, mediaCategory);
 
@@ -37,7 +34,7 @@ const HeroSlide = ({
     <Box
       sx={{
         position: "relative",
-        color: "primary.contrastText",
+        color: "text.primary",
         "&::before": {
           content: '""',
           width: "100%",
@@ -47,7 +44,7 @@ const HeroSlide = ({
           left: 0,
           zIndex: 2,
           pointerEvents: "none",
-          ...uiConfigs.style.gradientBgImage[theme.palette.mode],
+          ...uiConfigs.style.gradientBgImage,
         },
       }}
     >
@@ -85,9 +82,7 @@ const HeroSlide = ({
                 position: "absolute",
                 top: 0,
                 left: 0,
-                ...uiConfigs.style.horizontalGradientBgImage[
-                  theme.palette.mode
-                ],
+                ...uiConfigs.style.horizontalGradientBgImage,
               }}
             />
             <Box

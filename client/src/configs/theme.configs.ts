@@ -1,83 +1,89 @@
 import { createTheme } from "@mui/material/styles";
-import { type PaletteMode } from "@mui/material";
 
-export const themeModes = {
-  dark: "dark",
-  light: "light",
-} as const;
-
-// A refined Netflix-red identity: a slightly deeper, less harsh red than pure
-// #ff0000, near-black surfaces with a hint of lift on paper, and quiet dividers.
-const brandRed = {
-  main: "#e50914",
-  light: "#ff2e3d",
-  dark: "#b20710",
-  contrastText: "#ffffff",
+// "Selene" — MoonFlix's lunar-noir identity. A single committed dark theme:
+// night-ink surfaces, moon-silver text, and one champagne-gold accent.
+// Display type is Marcellus (ships in weight 400 only — never bold it),
+// body/UI type is Archivo.
+const selene = {
+  ink: "#0A0D15",
+  surface: "#131A29",
+  silver: "#E9EEF8",
+  muted: "#8C97AE",
+  gold: "#D4B978",
+  goldLight: "#E5CF9A",
+  goldDark: "#B39A5C",
 };
 
+const marcellus = '"Marcellus", "Georgia", serif';
+
 const themeConfigs = {
-  custom: ({ mode }: { mode: PaletteMode }) => {
-    const isDark = mode === themeModes.dark;
-
-    const customPalette = isDark
-      ? {
-          primary: brandRed,
-          secondary: {
-            main: "#f5f5f5",
-            contrastText: "#0a0a0a",
-          },
-          background: {
-            default: "#0a0a0a",
-            paper: "#171717",
-          },
-          text: {
-            primary: "#ffffff",
-            secondary: "rgba(255,255,255,0.68)",
-          },
-          divider: "rgba(255,255,255,0.09)",
-        }
-      : {
-          primary: brandRed,
-          secondary: {
-            main: "#1a1a1a",
-            contrastText: "#ffffff",
-          },
-          background: {
-            default: "#f4f4f5",
-            paper: "#ffffff",
-          },
-          text: {
-            primary: "#141414",
-            secondary: "rgba(0,0,0,0.6)",
-          },
-          divider: "rgba(0,0,0,0.08)",
-        };
-
-    return createTheme({
+  custom: () =>
+    createTheme({
       palette: {
-        mode,
-        ...customPalette,
+        // Hardcoded dark keeps MUI's dark defaults (Skeleton, Modal backdrop,
+        // action states) correct for the night palette.
+        mode: "dark",
+        primary: {
+          main: selene.gold,
+          light: selene.goldLight,
+          dark: selene.goldDark,
+          // Dark text on gold — gold is a light accent, white would wash out.
+          contrastText: selene.ink,
+        },
+        secondary: {
+          main: selene.silver,
+          contrastText: selene.ink,
+        },
+        background: {
+          default: selene.ink,
+          paper: selene.surface,
+        },
+        text: {
+          primary: selene.silver,
+          secondary: selene.muted,
+        },
+        divider: "rgba(233,238,248,0.09)",
       },
       shape: {
-        borderRadius: 8,
+        borderRadius: 10,
       },
       typography: {
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-        h4: { fontWeight: 700, letterSpacing: "-0.5px" },
-        h5: { fontWeight: 700, letterSpacing: "-0.25px" },
-        h6: { fontWeight: 700 },
-        button: { fontWeight: 600, letterSpacing: "0.3px" },
+        fontFamily: '"Archivo", "Helvetica", "Arial", sans-serif',
+        h1: { fontFamily: marcellus, fontWeight: 400 },
+        h2: { fontFamily: marcellus, fontWeight: 400 },
+        h3: { fontFamily: marcellus, fontWeight: 400 },
+        h4: { fontFamily: marcellus, fontWeight: 400, letterSpacing: "0.02em" },
+        h5: { fontFamily: marcellus, fontWeight: 400, letterSpacing: "0.02em" },
+        h6: { fontFamily: marcellus, fontWeight: 400, letterSpacing: "0.02em" },
+        overline: {
+          fontFamily: marcellus,
+          letterSpacing: "0.28em",
+          textTransform: "uppercase",
+        },
+        button: {
+          fontWeight: 500,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+        },
       },
       components: {
         MuiButton: {
           defaultProps: { disableElevation: true },
           styleOverrides: {
             root: {
-              borderRadius: 8,
-              paddingInline: 20,
-              transition:
-                "transform .15s ease, background-color .2s ease, box-shadow .2s ease",
-              "&:hover": { transform: "translateY(-1px)" },
+              borderRadius: 999,
+              paddingInline: 26,
+              transition: "all .35s ease",
+            },
+            outlinedPrimary: {
+              borderColor: "rgba(212,185,120,0.55)",
+              "&:hover": {
+                borderColor: selene.gold,
+                backgroundColor: "rgba(212,185,120,0.08)",
+              },
+            },
+            sizeLarge: {
+              paddingBlock: 10,
             },
           },
         },
@@ -86,31 +92,48 @@ const themeConfigs = {
             root: { transition: "transform .15s ease, color .2s ease" },
           },
         },
+        MuiChip: {
+          styleOverrides: {
+            root: { borderRadius: 999 },
+            filledPrimary: {
+              backgroundColor: "rgba(212,185,120,0.10)",
+              border: "1px solid rgba(212,185,120,0.35)",
+              color: selene.gold,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              fontSize: "0.72rem",
+            },
+          },
+        },
         MuiPaper: {
           styleOverrides: {
-            root: { backgroundImage: "none" },
+            root: {
+              backgroundImage: "none",
+              border: "1px solid rgba(233,238,248,0.06)",
+            },
           },
         },
         MuiCssBaseline: {
           styleOverrides: {
             html: { scrollBehavior: "smooth" },
-            body: { transition: "background-color .3s ease" },
-            "*::-webkit-scrollbar": { width: 8, height: 8 },
+            body: { backgroundColor: selene.ink },
+            "::selection": {
+              backgroundColor: "rgba(212,185,120,0.35)",
+              color: selene.silver,
+            },
+            "*::-webkit-scrollbar": { width: 6, height: 6 },
             "*::-webkit-scrollbar-track": { backgroundColor: "transparent" },
             "*::-webkit-scrollbar-thumb": {
-              backgroundColor: isDark
-                ? "rgba(229,9,20,0.45)"
-                : "rgba(0,0,0,0.25)",
-              borderRadius: 8,
+              backgroundColor: "rgba(212,185,120,0.35)",
+              borderRadius: 999,
             },
             "*::-webkit-scrollbar-thumb:hover": {
-              backgroundColor: "rgba(229,9,20,0.7)",
+              backgroundColor: "rgba(212,185,120,0.6)",
             },
           },
         },
       },
-    });
-  },
+    }),
 };
 
 export default themeConfigs;

@@ -80,7 +80,7 @@ const MediaItem = ({
           paddingTop: "160%",
           "&:hover .media-info": { opacity: 1, bottom: 0 },
           "&:hover .media-back-drop, &:hover .media-play-btn": { opacity: 1 },
-          color: "primary.contrastText",
+          color: "#E9EEF8",
         }}
       >
         {/* movie or tv item */}

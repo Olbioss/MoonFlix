@@ -12,12 +12,8 @@ import { Link } from "react-router-dom";
 import menuConfigs from "../../configs/menu.configs";
 import Logo from "./Logo";
 import uiConfigs from "../../configs/ui.configs";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 
-import { themeModes } from "../../configs/theme.configs";
 import { useUser } from "../../api/queries/user.queries";
-import useThemeStore from "../../store/themeStore";
 import useUiStore from "../../store/uiStore";
 
 const Sidebar = ({
@@ -29,16 +25,8 @@ const Sidebar = ({
 }) => {
   const { data: user } = useUser();
   const appState = useUiStore((s) => s.appState);
-  const themeMode = useThemeStore((s) => s.themeMode);
-  const setThemeMode = useThemeStore((s) => s.setThemeMode);
 
   const sidebarWidth = uiConfigs.size.sidebarWidth;
-
-  const onSwitchTheme = () => {
-    const theme =
-      themeMode === themeModes.dark ? themeModes.light : themeModes.dark;
-    setThemeMode(theme);
-  };
 
   const drawer = (
     <>
@@ -110,23 +98,6 @@ const Sidebar = ({
           </>
         )}
 
-        <Typography variant="h6" marginBottom="20px">
-          THEME
-        </Typography>
-        <ListItemButton onClick={onSwitchTheme}>
-          <ListItemIcon>
-            {themeMode === themeModes.dark && <DarkModeOutlinedIcon />}
-            {themeMode === themeModes.light && <WbSunnyOutlinedIcon />}
-          </ListItemIcon>
-          <ListItemText
-            disableTypography
-            primary={
-              <Typography textTransform="uppercase">
-                {themeMode === themeModes.dark ? "dark mode" : "light mode"}
-              </Typography>
-            }
-          />
-        </ListItemButton>
       </List>
     </>
   );
@@ -137,9 +108,9 @@ const Sidebar = ({
         open={open}
         onClose={() => toggleSidebar(false)}
         sx={{
-          "& .MuiDrawer-Paper": {
+          "& .MuiDrawer-paper": {
             boxSizing: "border-box",
-            widh: sidebarWidth,
+            width: sidebarWidth,
             borderRight: "0px",
           },
         }}

@@ -6,7 +6,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import PageWrapper from "./components/common/PageWrapper";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import themeConfigs from "./configs/theme.configs";
-import useThemeStore from "./store/themeStore";
 import routes from "./routes/routes";
 
 import "react-toastify/ReactToastify.css";
@@ -17,10 +16,8 @@ import MainLayout from "./components/MainLayout";
 import NotFound from "./pages/NotFound";
 
 const App = () => {
-  const themeMode = useThemeStore((s) => s.themeMode);
-
   return (
-    <ThemeProvider theme={themeConfigs.custom({ mode: themeMode })}>
+    <ThemeProvider theme={themeConfigs.custom()}>
       <ToastContainer
         position="bottom-left"
         autoClose={5000}
@@ -29,7 +26,13 @@ const App = () => {
         closeOnClick
         pauseOnFocusLoss
         pauseOnHover
-        theme={themeMode}
+        theme="dark"
+        toastStyle={{
+          backgroundColor: "#131A29",
+          color: "#E9EEF8",
+          border: "1px solid rgba(233,238,248,0.09)",
+          fontFamily: '"Archivo", sans-serif',
+        }}
       />
       <CssBaseline />
 

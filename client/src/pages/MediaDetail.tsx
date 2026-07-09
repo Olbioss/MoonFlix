@@ -103,7 +103,7 @@ const MediaDetail = () => {
       />
       <Box
         sx={{
-          color: "primary.contrastText",
+          color: "text.primary",
           ...uiConfigs.style.mainContent,
         }}
       >

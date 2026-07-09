@@ -1,6 +1,4 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import {
   AppBar,
   Box,
@@ -13,9 +11,7 @@ import {
 import { cloneElement, useState, type ReactElement } from "react";
 import { Link } from "react-router-dom";
 import menuConfigs from "../../configs/menu.configs";
-import { themeModes } from "../../configs/theme.configs";
 import { useUser } from "../../api/queries/user.queries";
-import useThemeStore from "../../store/themeStore";
 import useUiStore from "../../store/uiStore";
 import Logo from "./Logo";
 import UserMenu from "./UserMenu";
@@ -28,8 +24,6 @@ const ScrollAppbar = ({
   children: ReactElement<any>;
   window?: () => Window;
 }) => {
-  const themeMode = useThemeStore((s) => s.themeMode);
-
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 50,
@@ -37,16 +31,11 @@ const ScrollAppbar = ({
   });
   return cloneElement(children, {
     sx: {
-      color: trigger
-        ? "text.primary"
-        : themeMode === themeModes.dark
-          ? "primary.contrastText"
-          : "text.primary",
-      backgroundColor: trigger
-        ? "background.paper"
-        : themeMode === themeModes.dark
-          ? "transparent"
-          : "background.paper",
+      color: "text.primary",
+      backgroundColor: trigger ? "rgba(10,13,21,0.85)" : "transparent",
+      backdropFilter: trigger ? "blur(12px)" : "none",
+      borderBottom: trigger ? "1px solid rgba(233,238,248,0.08)" : "none",
+      transition: "background-color .35s ease, backdrop-filter .35s ease",
     },
   });
 };
@@ -54,16 +43,8 @@ const ScrollAppbar = ({
 const Topbar = () => {
   const { data: user } = useUser();
   const appState = useUiStore((s) => s.appState);
-  const themeMode = useThemeStore((s) => s.themeMode);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const setThemeMode = useThemeStore((s) => s.setThemeMode);
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
-
-  const onSwitchTheme = () => {
-    const theme =
-      themeMode === themeModes.dark ? themeModes.light : themeModes.dark;
-    setThemeMode(theme);
-  };
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -114,14 +95,6 @@ const Topbar = () => {
                   {item.display}
                 </Button>
               ))}
-              <IconButton
-                sx={{ color: "inherit" }}
-                aria-label="Toggle light or dark theme"
-                onClick={onSwitchTheme}
-              >
-                {themeMode === themeModes.dark && <DarkModeOutlinedIcon />}
-                {themeMode === themeModes.light && <WbSunnyOutlinedIcon />}
-              </IconButton>
             </Box>
             {/* user menu */}
             <Stack spacing={3} direction="row" alignContent="center">

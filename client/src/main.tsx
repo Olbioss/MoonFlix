@@ -4,10 +4,10 @@ import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persist
 import App from "./App";
 import { queryClient } from "./api/queryClient";
 
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
+import "@fontsource/marcellus/400.css";
+import "@fontsource/archivo/400.css";
+import "@fontsource/archivo/500.css";
+import "@fontsource/archivo/600.css";
 
 const persister = createSyncStoragePersister({
   storage: window.localStorage,
