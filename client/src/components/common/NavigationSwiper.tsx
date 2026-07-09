@@ -14,10 +14,14 @@ const NavigationSwiper = ({ children }: { children: ReactNode }) => {
         },
         "& .swiper-slide-active": { opacity: 1 },
         "& .swiper-pagination-bullet": {
-          backgroundColor: "text.primary",
+          backgroundColor: "rgba(233,238,248,0.35)",
+          opacity: 1,
+        },
+        "& .swiper-pagination-bullet-active": {
+          backgroundColor: "primary.main",
         },
         "& .swiper-button-next, & .swiper-button-prev": {
-          color: "text.primary",
+          color: "primary.main",
           "&::after": {
             fontSize: { xs: "1rem", md: "2rem" },
           },

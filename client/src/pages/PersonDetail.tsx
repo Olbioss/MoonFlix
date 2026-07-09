@@ -29,10 +29,14 @@ const PersonDetail = () => {
                     paddingTop: "160%",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
-                    backgroundColor: "darkgrey",
+                    backgroundColor: "#131A29",
                     backgroundImage: `url(${tmdbConfigs.posterPath(
                       person.profile_path,
                     )})`,
+                    borderRadius: "10px",
+                    outline: "1px solid rgba(233,238,248,0.10)",
+                    outlineOffset: "-1px",
+                    boxShadow: "0 14px 40px rgba(0,0,0,0.5)",
                   }}
                 />
               </Box>
@@ -43,7 +47,7 @@ const PersonDetail = () => {
                 }}
               >
                 <Stack spacing={2}>
-                  <Typography variant="h5" fontWeight="700">
+                  <Typography variant="h5">
                     {`${person.name} (${
                       person.birthday && person.birthday.split("-")[0]
                     }`}

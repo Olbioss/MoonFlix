@@ -127,6 +127,11 @@ const MediaDetail = () => {
                       media.poster_path || media.backdrop_path,
                     ),
                   ),
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  outline: "1px solid rgba(233,238,248,0.10)",
+                  outlineOffset: "-1px",
+                  boxShadow: "0 14px 40px rgba(0,0,0,0.5)",
                 }}
               />
             </Box>
@@ -140,8 +145,7 @@ const MediaDetail = () => {
                 {/* title */}
                 <Typography
                   variant="h4"
-                  fontSize={{ xs: "2rem", md: "2rem", lg: "4rem" }}
-                  fontWeight="700"
+                  fontSize={{ xs: "2rem", md: "2rem", lg: "3.4rem" }}
                   sx={{ ...uiConfigs.style.typoLines(2, "left") }}
                 >
                   {[

@@ -12,7 +12,7 @@ const CastSlide = ({ casts }: { casts: Cast[] }) => {
       sx={{
         "& .swiper-slide": {
           width: { xs: "50%", md: "25%", lg: "20.5%" },
-          color: "primary.contrastText",
+          color: "text.primary",
         },
       }}
     >
@@ -29,6 +29,10 @@ const CastSlide = ({ casts }: { casts: Cast[] }) => {
                 sx={{
                   paddingTop: "120%",
                   color: "text.primary",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  outline: "1px solid rgba(233,238,248,0.10)",
+                  outlineOffset: "-1px",
                   ...uiConfigs.style.backgroundImage(
                     tmdbConfigs.posterPath(cast.profile_path),
                   ),
@@ -41,7 +45,8 @@ const CastSlide = ({ casts }: { casts: Cast[] }) => {
                     height: "max-content",
                     bottom: 0,
                     padding: "10px",
-                    backgroundColor: "rgba(0,0,0,0.6)",
+                    backgroundColor: "rgba(10,13,21,0.72)",
+                    backdropFilter: "blur(4px)",
                   }}
                 >
                   <Typography sx={{ ...uiConfigs.style.typoLines(1, "left") }}>

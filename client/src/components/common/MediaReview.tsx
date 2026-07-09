@@ -34,9 +34,10 @@ const ReviewItem = ({
     <Box
       sx={{
         padding: 2,
-        borderRadius: "5px",
+        borderRadius: "10px",
         position: "relative",
         opacity: removeReview.isPending ? 0.6 : 1,
+        transition: "background-color .35s ease",
         "&:hover": { backgroundColor: "background.paper" },
       }}
     >
@@ -46,10 +47,10 @@ const ReviewItem = ({
         {/* avatar */}
         <Stack spacing={2} flexGrow={1}>
           <Stack spacing={1}>
-            <Typography variant="h6" fontWeight="700">
+            <Typography variant="body1" fontWeight={600}>
               {review.user?.displayName}
             </Typography>
-            <Typography variant="caption">
+            <Typography variant="caption" color="text.secondary">
               {dayjs(review.createdAt).format("DD-MM-YYYY HH:mm:ss")}
             </Typography>
           </Stack>
@@ -58,7 +59,7 @@ const ReviewItem = ({
           </Typography>
           {user && user.id === review.user.id && (
             <Button
-              variant="contained"
+              variant="outlined"
               startIcon={<DeleteIcon />}
               loadingPosition="start"
               loading={removeReview.isPending}
@@ -158,11 +159,7 @@ const MediaReview = ({
             item.user ? (
               <Box key={item.id}>
                 <ReviewItem review={item} onRemoved={onRemoved} />
-                <Divider
-                  sx={{
-                    display: { xs: "block", md: "none" },
-                  }}
-                />
+                <Divider />
               </Box>
             ) : null,
           )}
@@ -176,7 +173,7 @@ const MediaReview = ({
             <Stack direction="row" spacing={2}>
               <TextAvatar text={user.displayName} />
               <Stack spacing={2} flexGrow={1}>
-                <Typography variant="h6" fontWeight="700">
+                <Typography variant="body1" fontWeight={600}>
                   {user.displayName}
                 </Typography>
                 <TextField

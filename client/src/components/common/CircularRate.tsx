@@ -5,15 +5,23 @@ const CircularRate = ({ value }: { value: number }) => {
     <Box
       sx={{
         position: "relative",
-        display: "inline-block",
+        display: "inline-flex",
         width: "max-content",
       }}
     >
+      {/* faint track behind the gold ring */}
+      <CircularProgress
+        variant="determinate"
+        value={100}
+        size={50}
+        sx={{ color: "rgba(233,238,248,0.12)" }}
+      />
       <CircularProgress
         variant="determinate"
         value={value * 10}
-        color="success"
+        color="primary"
         size={50}
+        sx={{ position: "absolute", left: 0 }}
       />
       <Box
         sx={{
@@ -30,7 +38,7 @@ const CircularRate = ({ value }: { value: number }) => {
         <Typography
           variant="caption"
           component="div"
-          fontWeight="700"
+          fontWeight="600"
           sx={{ marginTop: "-5px" }}
         >
           {Math.floor(value * 10) / 10}
