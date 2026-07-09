@@ -26,9 +26,16 @@ const MainLayout = () => {
           flexGrow={1}
           overflow="hidden"
           minHeight="100vh"
-          sx={{ paddingLeft: { md: uiConfigs.size.railWidth } }}
+          sx={{
+            paddingLeft: { md: uiConfigs.size.railWidth },
+            display: "flex",
+            flexDirection: "column",
+          }}
         >
-          <Outlet />
+          {/* grows so the footer sits at the viewport bottom on short pages */}
+          <Box flexGrow={1}>
+            <Outlet />
+          </Box>
 
           <Footer />
         </Box>
