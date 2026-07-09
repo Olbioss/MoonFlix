@@ -30,6 +30,7 @@ const uiConfigs = {
   },
   size: {
     sidebarWidth: "300px",
+    railWidth: "72px",
     contentMaxWidth: "1366px",
   },
 };

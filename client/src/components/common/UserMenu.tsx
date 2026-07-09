@@ -8,10 +8,14 @@ import {
 } from "@mui/material";
 import { useState, type MouseEvent } from "react";
 import { Link } from "react-router-dom";
+import { Box } from "@mui/material";
 import menuConfigs from "../../configs/menu.configs";
 import { useUser, useLogout } from "../../api/queries/user.queries";
+import TextAvatar from "./TextAvatar";
 
-const UserMenu = () => {
+// "name" renders the display name (mobile topbar); "avatar" renders a
+// compact avatar trigger (nav rail).
+const UserMenu = ({ variant = "name" }: { variant?: "name" | "avatar" }) => {
   const { data: user } = useUser();
   const logout = useLogout();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -26,13 +30,25 @@ const UserMenu = () => {
     <>
       {user && (
         <>
-          <Typography
-            variant="h6"
-            sx={{ cursor: "pointer", userSelect: "none" }}
-            onClick={toggleMenu}
-          >
-            {user.displayName}
-          </Typography>
+          {variant === "avatar" ? (
+            <Box
+              onClick={toggleMenu}
+              role="button"
+              aria-label="Open user menu"
+              sx={{ cursor: "pointer", lineHeight: 0 }}
+            >
+              <TextAvatar text={user.displayName} />
+            </Box>
+          ) : (
+            <Typography
+              variant="body1"
+              fontWeight={500}
+              sx={{ cursor: "pointer", userSelect: "none" }}
+              onClick={toggleMenu}
+            >
+              {user.displayName}
+            </Typography>
+          )}
           <Menu
             open={open}
             anchorEl={anchorEl}

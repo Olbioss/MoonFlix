@@ -1,7 +1,6 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
-  Box,
   Button,
   IconButton,
   Stack,
@@ -9,8 +8,6 @@ import {
   useScrollTrigger,
 } from "@mui/material";
 import { cloneElement, useState, type ReactElement } from "react";
-import { Link } from "react-router-dom";
-import menuConfigs from "../../configs/menu.configs";
 import { useUser } from "../../api/queries/user.queries";
 import useUiStore from "../../store/uiStore";
 import Logo from "./Logo";
@@ -31,6 +28,7 @@ const ScrollAppbar = ({
   });
   return cloneElement(children, {
     sx: {
+      display: { xs: "block", md: "none" },
       color: "text.primary",
       backgroundColor: trigger ? "rgba(10,13,21,0.85)" : "transparent",
       backdropFilter: trigger ? "blur(12px)" : "none",
@@ -40,9 +38,10 @@ const ScrollAppbar = ({
   });
 };
 
+// Mobile-only chrome: a slim translucent bar with the drawer trigger and
+// wordmark. Desktop navigation lives in NavRail.
 const Topbar = () => {
   const { data: user } = useUser();
-  const appState = useUiStore((s) => s.appState);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const setAuthModalOpen = useUiStore((s) => s.setAuthModalOpen);
 
@@ -52,7 +51,7 @@ const Topbar = () => {
     <>
       <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
       <ScrollAppbar>
-        <AppBar elevation={0} sx={{ zIndex: 9999 }}>
+        <AppBar elevation={0}>
           <Toolbar
             sx={{ alignItems: "center", justifyContent: "space-between" }}
           >
@@ -60,53 +59,22 @@ const Topbar = () => {
               <IconButton
                 color="inherit"
                 aria-label="Open navigation menu"
-                sx={{ mr: 2, display: { md: "none" } }}
                 onClick={toggleSidebar}
               >
                 <MenuIcon />
               </IconButton>
-
-              <Box sx={{ display: { xs: "inline-block", md: "none" } }}>
-                <Logo />
-              </Box>
+              <Logo />
             </Stack>
 
-            <Box
-              flexGrow={1}
-              alignItems="center"
-              display={{ xs: "none", md: "flex" }}
-            >
-              <Box sx={{ marginRight: "30px" }}>
-                <Logo />
-              </Box>
-              {menuConfigs.main.map((item, index) => (
-                <Button
-                  key={index}
-                  sx={{
-                    color: appState.includes(item.state)
-                      ? "primary.contrastText"
-                      : "inherit",
-                    mr: 2,
-                  }}
-                  component={Link}
-                  to={item.path}
-                  variant={appState.includes(item.state) ? "contained" : "text"}
-                >
-                  {item.display}
-                </Button>
-              ))}
-            </Box>
             {/* user menu */}
-            <Stack spacing={3} direction="row" alignContent="center">
-              {!user && (
-                <Button
-                  variant="contained"
-                  onClick={() => setAuthModalOpen(true)}
-                >
-                  sign in
-                </Button>
-              )}
-            </Stack>
+            {!user && (
+              <Button
+                variant="outlined"
+                onClick={() => setAuthModalOpen(true)}
+              >
+                sign in
+              </Button>
+            )}
             {user && <UserMenu />}
             {/* user menu */}
           </Toolbar>

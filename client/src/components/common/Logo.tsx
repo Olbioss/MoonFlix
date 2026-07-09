@@ -4,7 +4,15 @@ const Logo = () => {
   const theme = useTheme();
 
   return (
-    <Typography fontWeight="700" fontSize="1.7rem">
+    <Typography
+      sx={{
+        fontFamily: '"Marcellus", "Georgia", serif',
+        textTransform: "uppercase",
+        letterSpacing: "0.24em",
+        fontSize: "1.3rem",
+        whiteSpace: "nowrap",
+      }}
+    >
       Moon<span style={{ color: theme.palette.primary.main }}>Flix</span>
     </Typography>
   );

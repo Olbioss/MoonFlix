@@ -36,8 +36,11 @@ const Sidebar = ({
         </Stack>
       </Toolbar>
       <List sx={{ paddingX: "30px" }}>
-        <Typography variant="h6" marginBottom="20px">
-          MENU
+        <Typography
+          variant="overline"
+          sx={{ color: "primary.main", display: "block", marginBottom: "8px" }}
+        >
+          Menu
         </Typography>
         {menuConfigs.main.map((item, index) => (
           <ListItemButton
@@ -45,9 +48,13 @@ const Sidebar = ({
             sx={{
               borderRadius: "10px",
               marginY: 1,
-              backgroundColor: appState.includes(item.state)
+              color: appState.includes(item.state)
                 ? "primary.main"
+                : "text.primary",
+              backgroundColor: appState.includes(item.state)
+                ? "rgba(212,185,120,0.10)"
                 : "unset",
+              "& .MuiListItemIcon-root": { color: "inherit" },
             }}
             component={Link}
             to={item.path}
@@ -67,8 +74,16 @@ const Sidebar = ({
 
         {user && (
           <>
-            <Typography variant="h6" marginBottom="20px">
-              PERSONAL
+            <Typography
+              variant="overline"
+              sx={{
+                color: "primary.main",
+                display: "block",
+                marginBottom: "8px",
+                marginTop: "16px",
+              }}
+            >
+              Personal
             </Typography>
             {menuConfigs.user.map((item, index) => (
               <ListItemButton
@@ -76,9 +91,13 @@ const Sidebar = ({
                 sx={{
                   borderRadius: "10px",
                   marginY: 1,
-                  backgroundColor: appState.includes(item.state)
+                  color: appState.includes(item.state)
                     ? "primary.main"
+                    : "text.primary",
+                  backgroundColor: appState.includes(item.state)
+                    ? "rgba(212,185,120,0.10)"
                     : "unset",
+                  "& .MuiListItemIcon-root": { color: "inherit" },
                 }}
                 component={Link}
                 to={item.path}

@@ -7,7 +7,15 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <Container>
-      <Paper square={true} sx={{ backgroundImage: "unset", padding: "2rem" }}>
+      <Paper
+        square={true}
+        sx={{
+          backgroundImage: "unset",
+          padding: "2rem",
+          border: "none",
+          borderTop: "1px solid rgba(212,185,120,0.25)",
+        }}
+      >
         <Stack
           alignItems={"center"}
           justifyContent={"space-between"}
@@ -19,7 +27,7 @@ const Footer = () => {
             {menuConfigs.main.map((item, index) => (
               <Button
                 key={index}
-                sx={{ color: "inherit" }}
+                sx={{ color: "text.secondary" }}
                 component={Link}
                 to={item.path}
               >
