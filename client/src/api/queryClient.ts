@@ -5,7 +5,8 @@ import type { ApiError } from "../types";
 const showError = (error: unknown) => {
   const message =
     (error as ApiError)?.message ?? "Something went wrong. Please try again.";
-  toast.error(message);
+  // toastId collapses identical concurrent failures into a single toast.
+  toast.error(message, { toastId: message });
 };
 
 export const queryClient = new QueryClient({
