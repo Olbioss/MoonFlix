@@ -6,9 +6,9 @@ import tmdbConfigs from "../../api/configs/tmdb.configs";
 import uiConfigs from "../../configs/ui.configs";
 import { routesGen } from "../../routes/routes";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import CircularRate from "./CircularRate";
 import { useFavorites } from "../../api/queries/favorite.queries";
 import favoriteUtils from "../../utils/favorite.utils";
+import { isNewRelease } from "../../utils/date.utils";
 
 // MediaItem renders items from several sources (browse media, favorites, and
 // person credits), so the shape is intentionally permissive.
@@ -66,6 +66,12 @@ const MediaItem = ({
     setRate(media.vote_average || media.mediaRate);
   }, [media, mediaType]);
 
+  const isNew = isNewRelease(
+    mediaType === tmdbConfigs.mediaType.movie
+      ? media.release_date
+      : media.first_air_date,
+  );
+
   return (
     <Link
       to={
@@ -78,6 +84,16 @@ const MediaItem = ({
         sx={{
           ...uiConfigs.style.backgroundImage(posterPath),
           paddingTop: "160%",
+          borderRadius: "10px",
+          overflow: "hidden",
+          outline: "1px solid rgba(233,238,248,0.10)",
+          outlineOffset: "-1px",
+          boxShadow: "0 8px 28px rgba(0,0,0,0.45)",
+          transition: "box-shadow .4s ease, outline-color .4s ease",
+          "&:hover": {
+            boxShadow: "0 10px 34px rgba(212,185,120,0.16)",
+            outlineColor: "rgba(212,185,120,0.35)",
+          },
           "&:hover .media-info": { opacity: 1, bottom: 0 },
           "&:hover .media-back-drop, &:hover .media-play-btn": { opacity: 1 },
           color: "#E9EEF8",
@@ -111,9 +127,27 @@ const MediaItem = ({
                 top: 0,
                 left: 0,
                 backgroundImage:
-                  "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
+                  "linear-gradient(to top, rgba(10,13,21,1), rgba(10,13,21,0))",
               }}
             />
+            {isNew && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: 0,
+                  bottom: "16px",
+                  backgroundColor: "primary.main",
+                  color: "primary.contrastText",
+                  fontSize: "0.65rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  padding: "4px 10px 3px",
+                }}
+              >
+                New
+              </Box>
+            )}
             <Button
               className="media-play-btn"
               variant="contained"
@@ -127,7 +161,10 @@ const MediaItem = ({
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                "& .MuiButton-startIcon": { marginRight: "-4px" },
+                borderRadius: "50%",
+                minWidth: 0,
+                padding: "14px",
+                "& .MuiButton-startIcon": { margin: 0 },
               }}
             />
             <Box
@@ -143,14 +180,35 @@ const MediaItem = ({
                 padding: { xs: "10px", md: "2rem 1rem" },
               }}
             >
-              <Stack spacing={{ xs: 1, md: 2 }}>
-                {rate && <CircularRate value={rate} />}
-
-                <Typography>{releaseDate}</Typography>
+              <Stack spacing={{ xs: 0.5, md: 1 }}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  {!!rate && (
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: "primary.main",
+                        letterSpacing: "0.08em",
+                      }}
+                    >
+                      ✦ {rate.toFixed(1)}
+                    </Typography>
+                  )}
+                  {releaseDate && (
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: "rgba(233,238,248,0.7)",
+                        letterSpacing: "0.08em",
+                      }}
+                    >
+                      {releaseDate}
+                    </Typography>
+                  )}
+                </Stack>
 
                 <Typography
                   variant="body1"
-                  fontWeight="700"
+                  fontWeight="600"
                   sx={{
                     fontSize: "1rem",
                     ...uiConfigs.style.typoLines(1, "left"),
@@ -173,7 +231,8 @@ const MediaItem = ({
               height: "max-content",
               bottom: 0,
               padding: "10px",
-              backgroundColor: "rgba(0,0,0,0.6)",
+              backgroundColor: "rgba(10,13,21,0.72)",
+              backdropFilter: "blur(4px)",
             }}
           >
             <Typography sx={{ ...uiConfigs.style.typoLines(1, "left") }}>

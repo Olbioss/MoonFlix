@@ -14,7 +14,8 @@ const MediaGridSkeleton = ({ count = 8 }: { count?: number }) => {
               width: "100%",
               aspectRatio: "2 / 3",
               height: "auto",
-              borderRadius: 2,
+              borderRadius: "10px",
+              bgcolor: "rgba(233,238,248,0.06)",
             }}
           />
         </Grid>

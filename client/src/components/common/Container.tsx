@@ -12,7 +12,6 @@ const Container = ({
     <Box
       sx={{
         marginTop: "5rem",
-        marginX: "auto",
         color: "text.primary",
       }}
     >
@@ -21,22 +20,24 @@ const Container = ({
           <Box
             sx={{
               position: "relative",
-              paddingX: { xs: "20px", md: 0 },
-              maxWidth: "1366px",
-              marginX: "auto",
               width: "100%",
-              "&::before": {
+              "&::after": {
                 content: '""',
                 position: "absolute",
-                left: { xs: "20px", md: "0" },
-                top: "100%",
-                height: "5px",
-                width: "100px",
-                backgroundColor: "primary.main",
+                left: 0,
+                top: "calc(100% + 12px)",
+                height: "1px",
+                width: "100%",
+                backgroundImage:
+                  "linear-gradient(to right, rgba(212,185,120,0.6), rgba(212,185,120,0.05))",
               },
             }}
           >
-            <Typography variant="h5" fontWeight="700" textTransform="uppercase">
+            <Typography
+              variant="h5"
+              textTransform="uppercase"
+              letterSpacing="0.22em"
+            >
               {header}
             </Typography>
           </Box>
