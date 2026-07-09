@@ -1,6 +1,7 @@
-import { Box, Button, Stack, TextField, Toolbar } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useState, type ChangeEvent } from "react";
 import MediaGrid from "../components/common/MediaGrid";
+import MediaGridSkeleton from "../components/common/MediaGridSkeleton";
 import uiConfigs from "../configs/ui.configs";
 import { useSearchMedia } from "../api/queries/media.queries";
 
@@ -26,8 +27,12 @@ const MediaSearch = () => {
 
   return (
     <>
-      <Toolbar />
-      <Box sx={{ ...uiConfigs.style.mainContent }}>
+      <Box
+        sx={{
+          ...uiConfigs.style.mainContent,
+          paddingTop: { xs: "80px", md: "2rem" },
+        }}
+      >
         <Stack spacing={2}>
           <Stack
             spacing={2}
@@ -59,9 +64,26 @@ const MediaSearch = () => {
             autoFocus
             onChange={onQueryChange}
           />
-          <MediaGrid medias={medias} mediaType={mediaType} />
+          {isFetching && medias.length === 0 && query.trim() ? (
+            <MediaGridSkeleton />
+          ) : (
+            <MediaGrid medias={medias} mediaType={mediaType} />
+          )}
+          {!isFetching && medias.length === 0 && query.trim() && (
+            <Typography
+              color="text.secondary"
+              textAlign="center"
+              sx={{ paddingY: "2rem", letterSpacing: "0.04em" }}
+            >
+              Nothing found under this moon.
+            </Typography>
+          )}
           {medias.length > 0 && hasNextPage && (
-            <Button loading={isFetching} onClick={() => fetchNextPage()}>
+            <Button
+              variant="outlined"
+              loading={isFetching}
+              onClick={() => fetchNextPage()}
+            >
               load more
             </Button>
           )}

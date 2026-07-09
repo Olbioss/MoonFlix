@@ -4,10 +4,15 @@ import { useIsFetching } from "@tanstack/react-query";
 import Logo from "./Logo";
 
 const GlobalLoading = () => {
-  // Show the overlay while any query except the silent background user
-  // revalidation is in flight.
+  // Show the overlay only for a screen's first load: skip the silent user
+  // revalidation, search-as-you-type queries (the search page has its own
+  // inline skeleton), and anything that already has data on screen
+  // (load-more pages, background refetches).
   const fetching = useIsFetching({
-    predicate: (query) => query.queryKey[0] !== "user",
+    predicate: (query) =>
+      query.queryKey[0] !== "user" &&
+      query.queryKey[1] !== "search" &&
+      query.state.data === undefined,
   });
   const [isLoading, setIsLoading] = useState(false);
 
