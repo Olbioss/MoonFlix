@@ -15,9 +15,13 @@ import { isNewRelease } from "../../utils/date.utils";
 const HeroSlide = ({
   mediaType,
   mediaCategory,
+  compact = false,
 }: {
   mediaType: string;
   mediaCategory: string;
+  // Browse pages use a shorter hero so the grid lands above the fold;
+  // home keeps the full cinematic height.
+  compact?: boolean;
 }) => {
   const { data: genres = [] } = useGenres(mediaType);
   const { data: movies = [] } = useMediaList(mediaType, mediaCategory);
@@ -60,7 +64,9 @@ const HeroSlide = ({
               {/* backdrop */}
               <Box
                 sx={{
-                  height: { xs: "80vh", md: "90vh" },
+                  height: compact
+                    ? { xs: "60vh", md: "64vh" }
+                    : { xs: "80vh", md: "90vh" },
                   backgroundPosition: "top",
                   backgroundSize: "cover",
                   backgroundImage: `url(${tmdbConfigs.backdropPath(

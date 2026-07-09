@@ -55,7 +55,9 @@ const FavoriteList = () => {
               ))}
             </Grid>
             {filteredMedias.length < favorites.length && (
-              <Button onClick={() => setPage((p) => p + 1)}>load more</Button>
+              <Button variant="outlined" onClick={() => setPage((p) => p + 1)}>
+                load more
+              </Button>
             )}
           </>
         )}

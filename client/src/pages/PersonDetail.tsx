@@ -1,4 +1,5 @@
-import { Box, Toolbar, Typography, Stack } from "@mui/material";
+import { Box, Typography, Stack } from "@mui/material";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import PersonMediaGrid from "../components/common/PersonMediaGrid";
 import tmdbConfigs from "../api/configs/tmdb.configs";
@@ -10,12 +11,20 @@ const PersonDetail = () => {
   const { personId = "" } = useParams();
   const { data: person } = usePerson(personId);
 
+  useEffect(() => {
+    if (person) document.title = `MoonFlix · ${person.name}`;
+  }, [person]);
+
   return (
     <>
-      <Toolbar />
       {person && (
         <>
-          <Box sx={{ ...uiConfigs.style.mainContent }}>
+          <Box
+            sx={{
+              ...uiConfigs.style.mainContent,
+              paddingTop: { xs: "80px", md: "2rem" },
+            }}
+          >
             <Box
               sx={{
                 position: "relative",

@@ -164,7 +164,9 @@ const MediaReview = ({
             ) : null,
           )}
           {filteredReviews.length < listReviews.length && (
-            <Button onClick={onLoadMore}>load more</Button>
+            <Button variant="outlined" onClick={onLoadMore}>
+              load more
+            </Button>
           )}
         </Stack>
         {user && (

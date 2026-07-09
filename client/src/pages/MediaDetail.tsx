@@ -22,6 +22,7 @@ import {
   useRemoveFavorite,
 } from "../api/queries/favorite.queries";
 import { useMediaDetail } from "../api/queries/media.queries";
+import NotFound from "./NotFound";
 import CastSlide from "../components/common/CastSlide";
 import MediaVideoSlide from "../components/common/MediaVideoSlide";
 import BackdropSlide from "../components/common/BackdropSlide";
@@ -32,12 +33,15 @@ import MediaReview from "../components/common/MediaReview";
 
 const MediaDetail = () => {
   const { mediaType = "", mediaId = "" } = useParams();
+  const isValidType = (
+    Object.values(tmdbConfigs.mediaType) as string[]
+  ).includes(mediaType);
   const { data: user } = useUser();
   const { data: listFavorites = [] } = useFavorites();
   const addFavorite = useAddFavorite();
   const removeFavorite = useRemoveFavorite();
   const favoritePending = addFavorite.isPending || removeFavorite.isPending;
-  const { data: media } = useMediaDetail(mediaType, mediaId);
+  const { data: media } = useMediaDetail(isValidType ? mediaType : "", mediaId);
   const [isFavorite, setIsFavorite] = useState(false);
   const genres = media?.genres.slice(0, 2) ?? [];
 
@@ -50,6 +54,10 @@ const MediaDetail = () => {
 
   useEffect(() => {
     if (media) setIsFavorite(media.isFavorite ?? false);
+  }, [media]);
+
+  useEffect(() => {
+    if (media) document.title = `MoonFlix · ${media.title || media.name}`;
   }, [media]);
 
   const onRemoveFavorite = () => {
@@ -93,6 +101,8 @@ const MediaDetail = () => {
       },
     );
   };
+
+  if (!isValidType) return <NotFound />;
 
   return media ? (
     <>

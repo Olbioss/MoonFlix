@@ -8,17 +8,25 @@ import MediaGrid from "../components/common/MediaGrid";
 import MediaGridSkeleton from "../components/common/MediaGridSkeleton";
 import useUiStore from "../store/uiStore";
 import { useInfiniteMediaList } from "../api/queries/media.queries";
+import NotFound from "./NotFound";
 
 const MediaList = () => {
   const { mediaType = "" } = useParams();
   const [currCategory, setCurrCategory] = useState(0);
   const setAppState = useUiStore((s) => s.setAppState);
 
+  // Junk single-segment URLs land here via /:mediaType — treat anything
+  // that isn't a real media type as a 404 and fire no queries.
+  const isValidType = (
+    Object.values(tmdbConfigs.mediaType) as string[]
+  ).includes(mediaType);
+  const safeMediaType = isValidType ? mediaType : "";
+
   const mediaCategories = useMemo(() => ["popular", "top_rated"], []);
   const category = ["popular", "top rated"];
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
-    useInfiniteMediaList(mediaType, mediaCategories[currCategory]);
+    useInfiniteMediaList(safeMediaType, mediaCategories[currCategory]);
   const medias = data?.pages.flatMap((p) => p.results) ?? [];
 
   useEffect(() => {
@@ -31,9 +39,12 @@ const MediaList = () => {
     setCurrCategory(categoryIndex);
   };
 
+  if (!isValidType) return <NotFound />;
+
   return (
     <>
       <HeroSlide
+        compact
         mediaType={mediaType}
         mediaCategory={mediaCategories[currCategory]}
       />
