@@ -23,10 +23,10 @@ services:
         generateValue: true
       - key: TMDB_BASE_URL
         value: https://api.themoviedb.org/3/
-      # Must match the static site's final URL — fix here if Render had to
-      # suffix the subdomain because the name was taken.
+      # Must match the static site's final URL. "moonflix.onrender.com" was
+      # already taken by another account, so Render suffixed ours to -avb1.
       - key: CORS_ORIGINS
-        value: https://moonflix.onrender.com
+        value: https://moonflix-avb1.onrender.com
 
   # Client — static site
   - type: web
