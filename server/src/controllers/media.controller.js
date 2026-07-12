@@ -13,7 +13,12 @@ const getList = async (req, res) => {
     const response = await tmdbApi.mediaList({ mediaType, mediaCategory, page });
 
     return responseHandler.ok(res, response);
-  } catch {
+  } catch (e) {
+    console.error(
+      `getList failed (${req.params.mediaType}/${req.params.mediaCategory}):`,
+      e?.response?.status,
+      e?.response?.data ?? e.message
+    );
     responseHandler.error(res);
   }
 };
@@ -25,7 +30,12 @@ const getGenres = async (req, res) => {
     const response = await tmdbApi.mediaGenres({ mediaType });
 
     return responseHandler.ok(res, response);
-  } catch {
+  } catch (e) {
+    console.error(
+      `getGenres failed (${req.params.mediaType}):`,
+      e?.response?.status,
+      e?.response?.data ?? e.message
+    );
     responseHandler.error(res);
   }
 };
@@ -42,7 +52,12 @@ const search = async (req, res) => {
     });
 
     responseHandler.ok(res, response);
-  } catch {
+  } catch (e) {
+    console.error(
+      `search failed (${req.params.mediaType}):`,
+      e?.response?.status,
+      e?.response?.data ?? e.message
+    );
     responseHandler.error(res);
   }
 };
