@@ -10,7 +10,15 @@ const showError = (error: unknown) => {
 };
 
 export const queryClient = new QueryClient({
-  queryCache: new QueryCache({ onError: showError }),
+  // Queries flagged with meta.silenceToast (e.g. the background session probe)
+  // fail quietly — a logged-out or expired-session visitor should never see an
+  // "Unauthorized" toast when landing on a public page.
+  queryCache: new QueryCache({
+    onError: (error, query) => {
+      if (query.meta?.silenceToast) return;
+      showError(error);
+    },
+  }),
   mutationCache: new MutationCache({ onError: showError }),
   defaultOptions: {
     queries: {

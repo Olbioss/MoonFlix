@@ -21,6 +21,9 @@ export const useUser = () =>
     queryFn: () => unwrap<User>(userApi.getInfo()),
     enabled: !!localStorage.getItem("actkn"),
     staleTime: 1000 * 60 * 5,
+    // A failed session probe (e.g. an expired token → 401) just means "logged
+    // out"; it must not surface as an error toast. See queryClient.ts.
+    meta: { silenceToast: true },
   });
 
 export const useLogout = () => {
